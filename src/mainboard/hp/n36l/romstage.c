@@ -153,7 +153,7 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 	rs780_early_setup();
 	sb800_early_setup();
 
-#if CONFIG_SET_FIDVID
+#if IS_ENABLED(CONFIG_SET_FIDVID)
 	msr = rdmsr(0xc0010071);
 	printk(BIOS_DEBUG, "\nBegin FIDVID MSR 0xc0010071 0x%08x 0x%08x\n", msr.hi, msr.lo);
 	post_code(0x39);
