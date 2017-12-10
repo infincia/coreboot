@@ -49,6 +49,8 @@ void set_sm_enable_bits(device_t sm_dev, u32 reg_pos, u32 mask, u32 val);
 
 #define REV_SB800_A11	0x11
 #define REV_SB800_A12	0x12
+#define REV_SB800_A13	0x13
+#define REV_SB800_A14	0x14
 
 
 #ifdef __PRE_RAM__
