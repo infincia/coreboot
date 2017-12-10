@@ -90,8 +90,12 @@ static u8 get_sb800_revision(void)
 		rev = REV_SB800_A11;
 	} else if (rev_id == 0x41) {
 		rev = REV_SB800_A12;
+	} else if (rev_id == 0x42) {
+		rev = REV_SB800_A13;
+	} else if (rev_id == 0x43) {
+		rev = REV_SB800_A14;
 	} else {
-		die("It is not SB800 or SB810\r\n");
+		die("It is not SB800/SB810/SB820M/SB850\r\n");
 	}
 
 	return rev;
