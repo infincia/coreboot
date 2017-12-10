@@ -1,0 +1,2 @@
+config BOARD_HP_N36L
+	bool "ProLiant Microserver N36L"
