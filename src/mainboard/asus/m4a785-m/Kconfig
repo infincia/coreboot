@@ -58,4 +58,8 @@ config VGA_BIOS_ID
 	string
 	default "1002,9710"
 
+config SB700_SKIP_PCI_LOCATE
+    bool
+    default n
+
 endif
