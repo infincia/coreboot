@@ -72,7 +72,7 @@ static void sb700_enable_rom(void)
 	/* Enable LPC ROM range end at 0xffff(ffff). */
 	pci_io_write_config16(dev, 0x6e, 0xffff);
 
-	/* SB700 LPC Bridge 0x48.
+	/* SB700 LPC Bridge 0x44.
 	 * Turn on all LPC IO Port decode enables
 	 */
 	pci_io_write_config32(dev, 0x44, 0xffffffff);
