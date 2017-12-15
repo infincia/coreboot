@@ -82,8 +82,12 @@ static u8 set_sb700_revision(void)
 	u8 rev = 0;
 
 	/* if (rev != 0) return rev; */
+#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+    dev = PCI_DEV(0, 0x14, 0);
+#else
+    dev = pci_locate_device(PCI_ID(0x1002, 0x4385), 0);
+#endif
 
-	dev = pci_locate_device(PCI_ID(0x1002, 0x4385), 0);
 
 	if (dev == PCI_DEV_INVALID) {
 		die("SMBUS controller not found\n");
@@ -136,7 +140,12 @@ void sb7xx_51xx_lpc_init(void)
 	u32 reg32;
 	pci_devfn_t dev;
 
-	dev = pci_locate_device(PCI_ID(0x1002, 0x4385), 0);	/* SMBUS controller */
+#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+    dev = PCI_DEV(0, 0x14, 0);
+#else
+    dev = pci_locate_device(PCI_ID(0x1002, 0x4385), 0);	/* SMBUS controller */
+#endif
+
 	/* NOTE: Set BootTimerDisable, otherwise it would keep rebooting!!
 	 * This bit has no meaning if debug strap is not enabled. So if the
 	 * board keeps rebooting and the code fails to reach here, we could
@@ -159,7 +168,13 @@ void sb7xx_51xx_lpc_init(void)
 	pci_write_config8(dev, 0xBB, reg8);
 #endif
 
-	dev = pci_locate_device(PCI_ID(0x1002, 0x439d), 0);	/* LPC Controller */
+#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+    dev = PCI_DEV(0, 0x14, 3);
+#else
+    dev = pci_locate_device(PCI_ID(0x1002, 0x439d), 0);	/* LPC Controller */
+#endif
+
+
 	/* Decode port 0x3f8-0x3ff (Serial 0) */
 	// XXX Serial port decode on LPC is hardcoded to 0x3f8
 	reg8 = pci_read_config8(dev, 0x44);
@@ -196,7 +211,13 @@ void sb7xx_51xx_enable_wideio(u8 wio_index, u16 base)
 	pci_devfn_t dev;
 	u8 reg8;
 
-	dev = pci_locate_device(PCI_ID(0x1002, 0x439d), 0);	/* LPC Controller */
+#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+    dev = PCI_DEV(0, 0x14, 3);
+#else
+    dev = pci_locate_device(PCI_ID(0x1002, 0x439d), 0);	/* LPC Controller */
+#endif
+
+
 	pci_write_config32(dev, 0x64, base);
 	reg8 = pci_read_config8(dev, 0x48);
 	reg8 |= 1 << 2;
@@ -209,7 +230,12 @@ void sb7xx_51xx_disable_wideio(u8 wio_index)
 	pci_devfn_t dev;
 	u8 reg8;
 
-	dev = pci_locate_device(PCI_ID(0x1002, 0x439d), 0);	/* LPC Controller */
+#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+    dev = PCI_DEV(0, 0x14, 3);
+#else
+    dev = pci_locate_device(PCI_ID(0x1002, 0x439d), 0);	/* LPC Controller */
+#endif
+
 	pci_write_config32(dev, 0x64, 0);
 	reg8 = pci_read_config8(dev, 0x48);
 	reg8 &= ~(1 << 2);
@@ -222,7 +248,12 @@ u32 get_sbdn(u32 bus)
 	pci_devfn_t dev;
 
 	/* Find the device. */
-	dev = pci_locate_device_on_bus(PCI_ID(0x1002, 0x4385), bus);
+#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+    dev = PCI_DEV(0, 0x14, 0);
+#else
+    dev = pci_locate_device_on_bus(PCI_ID(0x1002, 0x4385), bus);
+#endif
+
 	return (dev >> 15) & 0x1f;
 }
 
@@ -287,7 +318,11 @@ void sb7xx_51xx_pci_port80(void)
 	pci_devfn_t dev;
 
 	/* P2P Bridge */
-	dev = pci_locate_device(PCI_ID(0x1002, 0x4384), 0);
+#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+    dev = PCI_DEV(0, 0x14, 4);
+#else
+    dev = pci_locate_device(PCI_ID(0x1002, 0x4384), 0);
+#endif
 
 	/* Chip Control: Enable subtractive decoding */
 	byte = pci_read_config8(dev, 0x40);
@@ -319,7 +354,11 @@ void sb7xx_51xx_pci_port80(void)
 	pci_write_config8(dev, 0x04, byte);
 
 	/* LPC controller */
-	dev = pci_locate_device(PCI_ID(0x1002, 0x439D), 0);
+#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+    dev = PCI_DEV(0, 0x14, 3);
+#else
+    dev = pci_locate_device(PCI_ID(0x1002, 0x439D), 0);
+#endif
 
 	byte = pci_read_config8(dev, 0x4A);
 	byte &= ~(1 << 5);	/* disable lpc port 80 */
@@ -333,13 +372,23 @@ void sb7xx_51xx_lpc_port80(void)
 	u32 reg32;
 
 	/* Enable LPC controller */
-	dev = pci_locate_device(PCI_ID(0x1002, 0x4385), 0);
+#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+    dev = PCI_DEV(0, 0x14, 0);
+#else
+    dev = pci_locate_device(PCI_ID(0x1002, 0x4385), 0);
+#endif
+
 	reg32 = pci_read_config32(dev, 0x64);
 	reg32 |= 0x00100000;	/* lpcEnable */
 	pci_write_config32(dev, 0x64, reg32);
 
 	/* Enable port 80 LPC decode in pci function 3 configuration space. */
-	dev = pci_locate_device(PCI_ID(0x1002, 0x439d), 0);
+#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+    dev = PCI_DEV(0, 0x14, 3);
+#else
+    dev = pci_locate_device(PCI_ID(0x1002, 0x439d), 0);
+#endif
+
 	byte = pci_read_config8(dev, 0x4a);
 	byte |= 1 << 5;		/* enable port 80 */
 	pci_write_config8(dev, 0x4a, byte);
@@ -361,7 +410,12 @@ static void sb700_devices_por_init(void)
 	printk(BIOS_INFO, "sb700_devices_por_init()\n");
 	/* SMBus Device, BDF:0-20-0 */
 	printk(BIOS_INFO, "sb700_devices_por_init(): SMBus Device, BDF:0-20-0\n");
-	dev = pci_locate_device(PCI_ID(0x1002, 0x4385), 0);
+
+#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+    dev = PCI_DEV(0, 0x14, 0);
+#else
+    dev = pci_locate_device(PCI_ID(0x1002, 0x4385), 0);
+#endif
 
 	if (dev == PCI_DEV_INVALID) {
 		die("SMBUS controller not found\n");
@@ -474,7 +528,13 @@ static void sb700_devices_por_init(void)
 
 	/* IDE Device, BDF:0-20-1 */
 	printk(BIOS_INFO, "sb700_devices_por_init(): IDE Device, BDF:0-20-1\n");
-	dev = pci_locate_device(PCI_ID(0x1002, 0x439C), 0);
+
+#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+    dev = PCI_DEV(0, 0x14, 1);
+#else
+    dev = pci_locate_device(PCI_ID(0x1002, 0x439C), 0);
+#endif
+
 	/* Disable prefetch */
 	byte = pci_read_config8(dev, 0x63);
 	byte |= 0x1;
@@ -482,7 +542,13 @@ static void sb700_devices_por_init(void)
 
 	/* LPC Device, BDF:0-20-3 */
 	printk(BIOS_INFO, "sb700_devices_por_init(): LPC Device, BDF:0-20-3\n");
-	dev = pci_locate_device(PCI_ID(0x1002, 0x439D), 0);
+
+#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+    dev = PCI_DEV(0, 0x14, 3);
+#else
+    dev = pci_locate_device(PCI_ID(0x1002, 0x439D), 0);
+#endif
+
 	if (!IS_ENABLED(CONFIG_SOUTHBRIDGE_AMD_SB700_DISABLE_ISA_DMA)) {
 		/* DMA enable */
 		pci_write_config8(dev, 0x40, 0x04);
@@ -514,7 +580,12 @@ static void sb700_devices_por_init(void)
 	/* P2P Bridge, BDF:0-20-4, the configuration of the registers in this dev are copied from CIM,
 	 */
 	printk(BIOS_INFO, "sb700_devices_por_init(): P2P Bridge, BDF:0-20-4\n");
-	dev = pci_locate_device(PCI_ID(0x1002, 0x4384), 0);
+
+#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+    dev = PCI_DEV(0, 0x14, 4);
+#else
+    dev = pci_locate_device(PCI_ID(0x1002, 0x4384), 0);
+#endif
 
 	/* Arbiter enable. */
 	pci_write_config8(dev, 0x43, 0xff);
@@ -559,7 +630,12 @@ static void sb700_devices_por_init(void)
 
 	/* SATA Device, BDF:0-17-0, Non-Raid-5 SATA controller */
 	printk(BIOS_INFO, "sb700_devices_por_init(): SATA Device, BDF:0-17-0\n");
-	dev = pci_locate_device(PCI_ID(0x1002, 0x4390), 0);
+
+#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+    dev = PCI_DEV(0, 0x11, 0);
+#else
+    dev = pci_locate_device(PCI_ID(0x1002, 0x4390), 0);
+#endif
 
 	if (sata_ahci_mode) {
 		/* Switch to AHCI mode (AMD inbox) */
@@ -618,7 +694,14 @@ static void sb700_pmio_por_init(void)
 		pmio_write(0x68, byte);
 	} else {
 		/* RPR2.31 PM_TURN_OFF_MSG during ASF Shutdown. */
-		if (get_sb700_revision(pci_locate_device(PCI_ID(0x1002, 0x4385), 0)) <= 0x12) {
+        pci_devfn_t d;
+
+#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+        d = PCI_DEV(0, 0x14, 0);
+#else
+        d = pci_locate_device(PCI_ID(0x1002, 0x4385), 0);
+#endif
+		if (get_sb700_revision(d) <= 0x12) {
 			byte = pmio_read(0x65);
 			byte &= ~(1 << 7);
 			pmio_write(0x65, byte);
@@ -710,7 +793,11 @@ static void sb700_pci_cfg(void)
 	uint8_t acpi_s1_supported = 1;
 
 	/* SMBus Device, BDF:0-20-0 */
-	dev = pci_locate_device(PCI_ID(0x1002, 0x4385), 0);
+#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+    dev = PCI_DEV(0, 0x14, 0);
+#else
+    dev = pci_locate_device(PCI_ID(0x1002, 0x4385), 0);
+#endif
 
 	/* Enable watchdog timer decode */
 	byte = pci_read_config8(dev, 0x41);
@@ -724,7 +811,12 @@ static void sb700_pci_cfg(void)
 	pmio_write(0x65, byte);
 
 	/* IDE Device, BDF:0-20-1 */
-	dev = pci_locate_device(PCI_ID(0x1002, 0x439C), 0);
+#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+    dev = PCI_DEV(0, 0x14, 1);
+#else
+    dev = pci_locate_device(PCI_ID(0x1002, 0x439C), 0);
+#endif
+
 	/* Enable IDE Explicit prefetch, 0x63[0] clear */
 	byte = pci_read_config8(dev, 0x63);
 	byte &= 0xfe;
@@ -734,7 +826,12 @@ static void sb700_pci_cfg(void)
 	/* The code below is ported from old chipset. It is not
 	 * mentioned in RPR. But I keep them. The registers and the
 	 * comments are compatible. */
-	dev = pci_locate_device(PCI_ID(0x1002, 0x439D), 0);
+#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+    dev = PCI_DEV(0, 0x14, 3);
+#else
+    dev = pci_locate_device(PCI_ID(0x1002, 0x439D), 0);
+#endif
+
 	if (!IS_ENABLED(CONFIG_SOUTHBRIDGE_AMD_SB700_DISABLE_ISA_DMA)) {
 		/* Enabling LPC DMA function. */
 		byte = pci_read_config8(dev, 0x40);
@@ -751,11 +848,18 @@ static void sb700_pci_cfg(void)
 	pci_write_config8(dev, 0x78, byte);
 
 	/* SATA Device, BDF:0-17-0, Non-Raid-5 SATA controller */
-	dev = pci_locate_device(PCI_ID(0x1002, 0x4390), 0);
-	if (dev == PCI_DEV_INVALID)
-		dev = pci_locate_device(PCI_ID(0x1002, 0x4391), 0);
-	if (dev == PCI_DEV_INVALID)
-		dev = pci_locate_device(PCI_ID(0x1002, 0x4394), 0);
+#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+    dev = PCI_DEV(0, 0x11, 0);
+#else
+    dev = pci_locate_device(PCI_ID(0x1002, 0x4390), 0);
+
+    if (dev == PCI_DEV_INVALID)
+    	dev = pci_locate_device(PCI_ID(0x1002, 0x4391), 0);
+    if (dev == PCI_DEV_INVALID)
+    	dev = pci_locate_device(PCI_ID(0x1002, 0x4394), 0);
+#endif
+
+
 
 	/* rpr7.12 SATA MSI and D3 Power State Capability. */
 	byte = pci_read_config8(dev, 0x40);
