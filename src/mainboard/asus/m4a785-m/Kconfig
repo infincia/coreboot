@@ -58,6 +58,10 @@ config VGA_BIOS_ID
 	string
 	default "1002,9710"
 
+config M4A785M_PAUSE_ON_POST_CODES
+    bool
+    default n
+
 config M4A785M_EARLY_INIT
     bool
     default n
