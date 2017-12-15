@@ -19,6 +19,8 @@ config BOARD_SPECIFIC_OPTIONS # dummy
 	select BOARD_ROMSIZE_KB_1024
 	select ENABLE_APIC_EXT_ID
 	select GFXUMA
+	select SPI_FLASH
+	select BOOT_DEVICE_SPI_FLASH_RW_NOMMAP
 
 config MAINBOARD_DIR
 	string
