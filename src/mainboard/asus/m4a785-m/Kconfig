@@ -58,6 +58,14 @@ config VGA_BIOS_ID
 	string
 	default "1002,9710"
 
+config M4A785M_EARLY_INIT
+    bool
+    default n
+
+config M4A785M_EARLY_POST_CARD
+    bool
+    default n
+
 config SB700_SKIP_PCI_LOCATE
     bool
     default n
