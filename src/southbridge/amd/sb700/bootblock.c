@@ -14,8 +14,10 @@
  * GNU General Public License for more details.
  */
 
+#include "kconfig.h"
 #include <stdint.h>
 #include <arch/io.h>
+#include <arch/pci_io_cfg.h>
 #include <device/pci_ids.h>
 
 #define IO_MEM_PORT_DECODE_ENABLE_5	0x48
@@ -24,6 +26,11 @@
 
 #define SPI_CONTROL_1			0xc
 #define TEMPORARY_SPI_BASE_ADDRESS	0xfec10000
+
+#define MMIO_NON_POSTED_START 0xfed00000
+#define MMIO_NON_POSTED_END   0xfedfffff
+#define SB_MMIO 0xFED80000
+#define SB_MMIO_MISC32(x) *(volatile u32 *)(SB_MMIO + 0xE00 + (x))
 
 /*
  * Enable 4MB (LPC) ROM access at 0xFFC00000 - 0xFFFFFFFF.
@@ -123,8 +130,109 @@ static void sb700_configure_rom(void)
 	}
 }
 
+#if IS_ENABLED(M4A785M_EARLY_INIT)
+static void sb700_early_init(void) {
+	pci_devfn_t ht_dev;
+	ht_dev = PCI_DEV(0, 0x18, 1);
+
+	pci_devfn_t sm_dev;
+	sm_dev = PCI_DEV(0, 0x14, 0);
+
+	/* route FED00000 - FEDFFFFF as non-posted to SB */
+	pci_io_write_config32(ht_dev, 0x84,
+						  (((MMIO_NON_POSTED_END & ~0xffffu)  >> 8) | (1 << 7)));
+	/* lowest NP address is HPET at FED00000 */
+	pci_io_write_config32(ht_dev, 0x80,
+						  (MMIO_NON_POSTED_START >> 8) | 3);
+
+	/* Send all IO (0000-FFFF) to southbridge. */
+	pci_io_write_config32(ht_dev, 0xc4,  0x0000f000);
+	pci_io_write_config32(ht_dev, 0xc0,  0x00000003);
+
+	/* SB  MMIO range decode enable */
+	outb(0x24, 0xcd6);
+	outb(0x1, 0xcd7);
+
+	/* NOTE: Set BootTimerDisable, otherwise it would keep rebooting!!
+	 * This bit has no meaning if debug strap is not enabled. So if the
+	 * board keeps rebooting and the code fails to reach here, we could
+	 * disable the debug strap first. */
+	reg32 = pci_io_read_config32(sm_dev, 0x4C);
+	reg32 |= 1 << 31;
+	pci_io_write_config32(sm_dev, 0x4C, reg32);
+
+}
+#endif
+
+#if IS_ENABLED(M4A785M_EARLY_POST_CARD)
+static void sb700_early_post_card(void)
+{
+	u8 reg8;
+
+	pci_devfn_t pci_dev;
+	pci_devfn_t lpc_dev;
+
+	lpc_dev = PCI_DEV(0, 0x14, 3);
+	pci_dev = PCI_DEV(0, 0x14, 4);
+
+	/* Enable LPC decoding of 0x2e/0x2f, 0x4e/0x4f 0x3f8  */
+	pci_io_write_config8(lpc_dev, 0x44, (1<<6));
+	pci_io_write_config8(lpc_dev, 0x48, (1 << 1) | (1 << 0));
+
+	/* Chip Control: Enable subtractive decoding */
+	reg8 = pci_io_read_config8(pci_dev, 0x40);
+	reg8 |= 1 << 5;
+	pci_io_write_config8(pci_dev, 0x40, reg8);
+
+	/* Misc Control: Enable subtractive decoding if 0x40 bit 5 is set */
+	reg8 = pci_io_read_config8(pci_dev, 0x4b);
+	reg8 |= 1 << 7;
+	pci_io_write_config8(pci_dev, 0x4b, reg8);
+
+	/* The same IO Base and IO Limit here is meaningful because we set the
+	 * bridge to be subtractive. During early setup stage, we have to make
+	 * sure that data can go through port 0x80.
+	 */
+	/* IO Base: 0xf000 */
+	reg8 = pci_io_read_config8(pci_dev, 0x1c);
+	reg8 |= 0xf << 4;
+	pci_io_write_config8(pci_dev, 0x1c, reg8);
+
+	/* IO Limit: 0xf000 */
+	reg8 = pci_io_read_config8(pci_dev, 0x1d);
+	reg8 |= 0xf << 4;
+	pci_io_write_config8(pci_dev, 0x1d, reg8);
+
+	/* PCI Command: Enable IO response */
+	reg8 = pci_io_read_config8(pci_dev, 0x4);
+	reg8 |= 1 << 0;
+	pci_io_write_config8(pci_dev, 0x4, reg8);
+
+	reg8 = pci_io_read_config8(lpc_dev, IO_MEM_PORT_DECODE_ENABLE_6);
+	reg8 &= ~(1 << 5);	/* disable lpc port 80 */
+	pci_io_write_config8(lpc_dev, IO_MEM_PORT_DECODE_ENABLE_6, reg8);
+
+	uint8_t a = inb(0x80);
+
+	outb(0xE1, 0x80);
+	uint8_t b = inb(0x80);
+}
+#endif
+
+
 static void bootblock_southbridge_init(void)
 {
+#if IS_ENABLED(M4A785M_EARLY_INIT)
+	sb700_early_init();
+#endif
+
+#if IS_ENABLED(M4A785M_EARLY_POST_CARD)
+    sb700_early_post_card();
+#endif
+	outb(0xE2, 0x80);
 	sb700_enable_rom();
+	outb(0xE3, 0x80);
 	sb700_configure_rom();
+	outb(0xE4, 0x80);
 }
+
