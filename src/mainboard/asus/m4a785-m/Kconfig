@@ -58,20 +58,26 @@ config VGA_BIOS_ID
 	string
 	default "1002,9710"
 
-config M4A785M_PAUSE_ON_POST_CODES
-    bool
-    default n
 
-config M4A785M_EARLY_INIT
-    bool
-    default n
+menu "Temporary hacks"
 
-config M4A785M_EARLY_POST_CARD
-    bool
-    default n
+    config M4A785M_PAUSE_ON_POST_CODES
+        bool "Pause 1s after each post code display"
+        default n
 
-config SB700_SKIP_PCI_LOCATE
-    bool
-    default n
+    config M4A785M_EARLY_INIT
+        bool "Temporary early init"
+        default n
+
+    config M4A785M_EARLY_POST_CARD
+        bool "Set up POST card earlier in boot block"
+        default n
+
+    config SB700_SKIP_PCI_LOCATE
+        bool "Hardcode PCI locations instead of using locate function"
+        default n
+
+endmenu
 
 endif
+
