@@ -985,6 +985,8 @@ void cpuSetAMDMSR(uint8_t node_id)
 	printk(BIOS_DEBUG, "cpuSetAMDMSR ");
 
 	revision = mctGetLogicalCPUID(0xFF);
+	printk(BIOS_DEBUG, "Revision: 0x%llx \n", revision);
+
 	platform = get_platform_type();
 
 	for (i = 0; i < ARRAY_SIZE(fam10_msr_default); i++) {
