@@ -71,46 +71,28 @@ int spd_read_byte(u32 device, u32 address)
 void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 {
 	outb(0xF5, 0x80);
-#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
-	delay(1);
-#endif
 
     struct sys_info *sysinfo = &sysinfo_car;
 	static const u8 spd_addr[] = {RC00, DIMM0, DIMM2, 0, 0, DIMM1, DIMM3, 0, 0, };
 	u32 bsp_apicid = 0, val;
 	msr_t msr;
 	outb(0xF6, 0x80);
-#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
-	delay(1);
-#endif
 
     timestamp_init(timestamp_get());
 	timestamp_add_now(TS_START_ROMSTAGE);
 	outb(0xF7, 0x80);
-#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
-	delay(1);
-#endif
 
 	if (!cpu_init_detectedx && boot_cpu()) {
 		outb(0xD0, 0x80);
-#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
-		delay(1);
-#endif
 
 		/* Nothing special needs to be done to find bus 0 */
 		/* Allow the HT devices to be found */
 		/* mov bsp to bus 0xff when > 8 nodes */
 		set_bsp_node_CHtExtNodeCfgEn();
 		outb(0xD1, 0x80);
-#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
-		delay(1);
-#endif
 
 		enumerate_ht_chain();
 		outb(0xD2, 0x80);
-#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
-		delay(1);
-#endif
 
 #if !IS_ENABLED(CONFIG_M4A785M_EARLY_POST_CARD)
 		sb7xx_51xx_pci_port80();
@@ -119,53 +101,30 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
     }
 
 	post_code(0x30);
-#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
-	delay(1);
-#endif
 
 	if (bist == 0) {
 		outb(0xC0, 0x80);
-#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
-		delay(1);
-#endif
+
 		bsp_apicid = init_cpus(cpu_init_detectedx, sysinfo); /* mmconf is inited in init_cpus */
 		/* All cores run this but the BSP(node0,core0) is the only core that returns. */
 		outb(0xC1, 0x80);
-#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
-		delay(1);
-#endif
 	}
 
 	post_code(0x32);
-#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
-	delay(1);
-#endif
 
 	enable_rs780_dev8();
 	outb(0xF9, 0x80);
-#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
-	delay(1);
-#endif
 
 #if !IS_ENABLED(CONFIG_M4A785M_EARLY_POST_CARD)
 	sb7xx_51xx_lpc_init();
 	outb(0xFA, 0x80);
-#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
-	delay(1);
-#endif
 #endif
 
 	ite_enable_serial(SERIAL_DEV, CONFIG_TTYS0_BASE);
 	outb(0xFB, 0x80);
-#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
-	delay(1);
-#endif
 
 	ite_kill_watchdog(GPIO_DEV);
 	outb(0xFC, 0x80);
-#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
-	delay(1);
-#endif
 
 	console_init();
 	outb(0xFD, 0x80);
