@@ -82,7 +82,7 @@ uint64_t mctGetLogicalCPUID(u32 Node)
 		break;
 	case 0x10052:
 	case 0x10053:
-		ret = AMD_SAFEMODE;
+		ret = AMD_RB_C2;
 			break;
 	case 0x10062:
 		ret = AMD_DA_C2;
