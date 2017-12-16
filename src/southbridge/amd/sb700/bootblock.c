@@ -157,7 +157,7 @@ static void sb700_early_init(void) {
 	 * This bit has no meaning if debug strap is not enabled. So if the
 	 * board keeps rebooting and the code fails to reach here, we could
 	 * disable the debug strap first. */
-	reg32 = pci_io_read_config32(sm_dev, 0x4C);
+	uint32_t reg32 = pci_io_read_config32(sm_dev, 0x4C);
 	reg32 |= 1 << 31;
 	pci_io_write_config32(sm_dev, 0x4C, reg32);
 
