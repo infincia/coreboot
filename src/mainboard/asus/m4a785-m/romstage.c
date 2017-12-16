@@ -102,7 +102,7 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 
     }
 
-	post_code(0x30);
+	outb(0x30, 0x80);
 
 	if (bist == 0) {
 		outb(0xC0, 0x80);
@@ -112,7 +112,7 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 		outb(0xC1, 0x80);
 	}
 
-	post_code(0x32);
+	outb(0x32, 0x80);
 
 	enable_rs780_dev8();
 	outb(0xF9, 0x80);
