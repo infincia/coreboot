@@ -92,13 +92,6 @@ static void sb700_enable_rom(void)
 	reg8 = pci_io_read_config8(dev, IO_MEM_PORT_DECODE_ENABLE_5);
 	reg8 |= (1 << 0) | (1 << 1) | (1 << 6);
 	pci_io_write_config8(dev, IO_MEM_PORT_DECODE_ENABLE_5, reg8);
-
-	/* SB700 LPC Bridge 0x4a.
-	 * BIT5: Port Enable for Port 0x80
-	 */
-	reg8 = pci_io_read_config8(dev, IO_MEM_PORT_DECODE_ENABLE_6);
-	reg8 |= (1 << 5);
-	pci_io_write_config8(dev, IO_MEM_PORT_DECODE_ENABLE_6, reg8);
 }
 
 static void sb700_configure_rom(void)
