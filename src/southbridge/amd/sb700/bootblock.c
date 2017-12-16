@@ -180,6 +180,23 @@ static void sb700_early_post_card(void)
 	/* Enable LPC decoding of 0x2e/0x2f, 0x4e/0x4f 0x3f8  */
 	pci_io_write_config8(lpc_dev, 0x48, (1 << 1) | (1 << 0));
 
+	/* Decode port 0x60 & 0x64 (PS/2 keyboard) and port 0x62 & 0x66 (ACPI)*/
+	reg8 = pci_io_read_config8(lpc_dev, 0x47);
+	reg8 |= (1 << 5) | (1 << 6);
+	pci_io_write_config8(lpc_dev, 0x47, reg8);
+
+	/* Enable PrefetchEnSPIFromHost to speed up SPI flash read (does not affect LPC) */
+	reg8 = pci_io_read_config8(lpc_dev, 0xbb);
+	reg8 |= 1 << 0;
+	pci_io_write_config8(lpc_dev, 0xbb, reg8);
+
+	/* Super I/O, RTC */
+	reg8 = pci_io_read_config8(lpc_dev, 0x48);
+	/* Decode port 0x70-0x73 (RTC) */
+	reg8 |= (1 << 6);
+	pci_io_write_config8(lpc_dev, 0x48, reg8);
+
+
 	/* Chip Control: Enable subtractive decoding */
 	reg8 = pci_io_read_config8(pci_dev, 0x40);
 	reg8 |= 1 << 5;
