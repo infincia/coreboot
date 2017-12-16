@@ -80,9 +80,6 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 
     console_init();
     outb(0xFD, 0x80);
-#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
-    delay(1);
-#endif
 
     struct sys_info *sysinfo = &sysinfo_car;
 	static const u8 spd_addr[] = {RC00, DIMM0, DIMM2, 0, 0, DIMM1, DIMM3, 0, 0, };
