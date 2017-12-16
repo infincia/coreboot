@@ -173,8 +173,11 @@ static void sb700_early_post_card(void)
 	lpc_dev = PCI_DEV(0, 0x14, 3);
 	pci_dev = PCI_DEV(0, 0x14, 4);
 
-	/* Enable LPC decoding of 0x2e/0x2f, 0x4e/0x4f 0x3f8  */
+	/* Decode port 0x3f8-0x3ff (Serial 0) */
+	// XXX Serial port decode on LPC is hardcoded to 0x3f8
 	pci_io_write_config8(lpc_dev, 0x44, (1<<6));
+
+	/* Enable LPC decoding of 0x2e/0x2f, 0x4e/0x4f 0x3f8  */
 	pci_io_write_config8(lpc_dev, 0x48, (1 << 1) | (1 << 0));
 
 	/* Chip Control: Enable subtractive decoding */
