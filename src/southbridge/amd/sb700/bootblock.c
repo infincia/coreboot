@@ -130,7 +130,7 @@ static void sb700_configure_rom(void)
 	}
 }
 
-#if IS_ENABLED(M4A785M_EARLY_INIT)
+#if IS_ENABLED(CONFIG_M4A785M_EARLY_INIT)
 static void sb700_early_init(void) {
 	pci_devfn_t ht_dev;
 	ht_dev = PCI_DEV(0, 0x18, 1);
@@ -164,7 +164,7 @@ static void sb700_early_init(void) {
 }
 #endif
 
-#if IS_ENABLED(M4A785M_EARLY_POST_CARD)
+#if IS_ENABLED(CONFIG_M4A785M_EARLY_POST_CARD)
 static void sb700_early_post_card(void)
 {
 	u8 reg8;
@@ -222,11 +222,11 @@ static void sb700_early_post_card(void)
 
 static void bootblock_southbridge_init(void)
 {
-#if IS_ENABLED(M4A785M_EARLY_INIT)
+#if IS_ENABLED(CONFIG_M4A785M_EARLY_INIT)
 	sb700_early_init();
 #endif
 
-#if IS_ENABLED(M4A785M_EARLY_POST_CARD)
+#if IS_ENABLED(CONFIG_M4A785M_EARLY_POST_CARD)
     sb700_early_post_card();
 #endif
 	outb(0xE2, 0x80);

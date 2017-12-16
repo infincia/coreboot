@@ -72,7 +72,7 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 {
     post_code(0x20);
 	outb(0xF5, 0x80);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 	delay(1);
 #endif
 
@@ -81,7 +81,7 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 	u32 bsp_apicid = 0, val;
 	msr_t msr;
 	outb(0xF6, 0x80);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 	delay(1);
 #endif
 
@@ -91,14 +91,14 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
     timestamp_init(timestamp_get());
 	timestamp_add_now(TS_START_ROMSTAGE);
 	outb(0xF7, 0x80);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 	delay(1);
 #endif
 
     post_code(0x22);
 	if (!cpu_init_detectedx && boot_cpu()) {
 		outb(0xD0, 0x80);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 		delay(1);
 #endif
 
@@ -108,72 +108,72 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
         post_code(0x23);
 		set_bsp_node_CHtExtNodeCfgEn();
 		outb(0xD1, 0x80);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 		delay(1);
 #endif
 
 		enumerate_ht_chain();
 		outb(0xD2, 0x80);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 		delay(1);
 #endif
 
-#if !IS_ENABLED(M4A785M_EARLY_POST_CARD)
+#if !IS_ENABLED(CONFIG_M4A785M_EARLY_POST_CARD)
 		sb7xx_51xx_pci_port80();
 #endif
 
     }
 
 	post_code(0x30);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 	delay(1);
 #endif
 
 	if (bist == 0) {
 		outb(0xC0, 0x80);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 		delay(1);
 #endif
 		bsp_apicid = init_cpus(cpu_init_detectedx, sysinfo); /* mmconf is inited in init_cpus */
 		/* All cores run this but the BSP(node0,core0) is the only core that returns. */
 		outb(0xC1, 0x80);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 		delay(1);
 #endif
 	}
 
 	post_code(0x32);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 	delay(1);
 #endif
 
 	enable_rs780_dev8();
 	outb(0xF9, 0x80);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 	delay(1);
 #endif
 
 	sb7xx_51xx_lpc_init();
 	outb(0xFA, 0x80);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 	delay(1);
 #endif
 
 	ite_enable_serial(SERIAL_DEV, CONFIG_TTYS0_BASE);
 	outb(0xFB, 0x80);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 	delay(1);
 #endif
 
 	ite_kill_watchdog(GPIO_DEV);
 	outb(0xFC, 0x80);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 	delay(1);
 #endif
 
 	console_init();
 	outb(0xFD, 0x80);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 	delay(1);
 #endif
 
@@ -182,14 +182,14 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 	/* Halt if there was a built in self test failure */
 	report_bist_failure(bist);
 	outb(0xFE, 0x80);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 	delay(1);
 #endif
 
 	// Load MPB
 	val = cpuid_eax(1);
 	outb(0xFF, 0x80);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 	delay(1);
 #endif
 
@@ -198,47 +198,47 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 	printk(BIOS_DEBUG, "bsp_apicid = %02x\n", bsp_apicid);
 	printk(BIOS_DEBUG, "cpu_init_detectedx = %08lx\n", cpu_init_detectedx);
 	outb(0xC2, 0x80);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 	delay(1);
 #endif
 
 	/* Setup sysinfo defaults */
 	set_sysinfo_in_ram(0);
 	outb(0xC3, 0x80);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 	delay(1);
 #endif
 
 	update_microcode(val);
 
 	post_code(0x33);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 	delay(1);
 #endif
 
 	cpuSetAMDMSR(0);
 	post_code(0x34);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 	delay(1);
 #endif
 
 	amd_ht_init(sysinfo);
 	post_code(0x35);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 	delay(1);
 #endif
 
 	/* Setup nodes PCI space and start core 0 AP init. */
 	finalize_node_setup(sysinfo);
 	outb(0xC4, 0x80);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 	delay(1);
 #endif
 
 	/* Setup any mainboard PCI settings etc. */
 	setup_mb_resource_map();
 	post_code(0x36);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 	delay(1);
 #endif
 
@@ -250,7 +250,7 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 	 */
 	wait_all_core0_started();
 	outb(0xC5, 0x80);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 	delay(1);
 #endif
 
@@ -259,34 +259,34 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 	printk(BIOS_DEBUG, "start_other_cores()\n");
 	start_other_cores(bsp_apicid);
 	post_code(0x37);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 	delay(1);
 #endif
 	wait_all_other_cores_started(bsp_apicid);
  #endif
 
 	post_code(0x38);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 	delay(1);
 #endif
 
 	/* run _early_setup before soft-reset. */
 	rs780_early_setup();
 	outb(0xC6, 0x80);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 	delay(1);
 #endif
 
 	sb7xx_51xx_early_setup();
 	outb(0xC7, 0x80);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 	delay(1);
 #endif
 
  #if IS_ENABLED(CONFIG_SET_FIDVID)
 	msr = rdmsr(0xc0010071);
 	outb(0xC8, 0x80);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 	delay(1);
 #endif
 
@@ -297,26 +297,26 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 	enable_fid_change_on_sb(sysinfo->sbbusn, sysinfo->sbdn);
 
 	post_code(0x39);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 	delay(1);
 #endif
 
 	if (!warm_reset_detect(0)) {			// BSP is node 0
 		outb(0xC9, 0x80);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 		delay(1);
 #endif
 		init_fidvid_bsp(bsp_apicid, sysinfo->nodes);
 	} else {
 		outb(0xCA, 0x80);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 		delay(1);
 #endif
 		init_fidvid_stage2(bsp_apicid, 0);	// BSP is node 0
 	}
 
 	post_code(0x3A);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 	delay(1);
 #endif
 
@@ -326,13 +326,13 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
  #endif
 
 	outb(0xCB, 0x80);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 	delay(1);
 #endif
 
 	rs780_htinit();
 	outb(0xCC, 0x80);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 	delay(1);
 #endif
 
@@ -341,7 +341,7 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 	if (!warm_reset_detect(0)) {
 		outb(0xCD, 0x80);
 
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 		delay(10);
 #endif
 		printk(BIOS_INFO, "...WARM RESET...\n\n\n");
@@ -350,7 +350,7 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 	}
 
 	post_code(0x3B);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 	delay(1);
 #endif
 
@@ -359,7 +359,7 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 	fill_mem_ctrl(sysinfo->nodes, sysinfo->ctrl, spd_addr);
 
 	post_code(0x40);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 	delay(1);
 #endif
 
@@ -368,31 +368,31 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 	timestamp_add_now(TS_BEFORE_INITRAM);
 	printk(BIOS_DEBUG, "raminit_amdmct()\n");
 	outb(0xCE, 0x80);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 	delay(1);
 #endif
 
 	raminit_amdmct(sysinfo);
 	outb(0xCF, 0x80);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 	delay(1);
 #endif
 
 	timestamp_add_now(TS_AFTER_INITRAM);
 	outb(0xB0, 0x80);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 	delay(1);
 #endif
 
 	cbmem_initialize_empty();
 	post_code(0x41);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 	delay(1);
 #endif
 
 	amdmct_cbmem_store_info(sysinfo);
 	outb(0xB1, 0x80);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 	delay(1);
 #endif
 
@@ -408,7 +408,7 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 	sb7xx_51xx_before_pci_init();
 
 	post_code(0x42);
-#if IS_ENABLED(M4A785M_PAUSE_ON_POST_CODES)
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 	delay(1);
 #endif
 }

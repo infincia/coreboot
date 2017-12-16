@@ -82,7 +82,7 @@ static u8 set_sb700_revision(void)
 	u8 rev = 0;
 
 	/* if (rev != 0) return rev; */
-#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+#if IS_ENABLED(CONFIG_SB700_SKIP_PCI_LOCATE)
     dev = PCI_DEV(0, 0x14, 0);
 #else
     dev = pci_locate_device(PCI_ID(0x1002, 0x4385), 0);
@@ -140,7 +140,7 @@ void sb7xx_51xx_lpc_init(void)
 	u32 reg32;
 	pci_devfn_t dev;
 
-#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+#if IS_ENABLED(CONFIG_SB700_SKIP_PCI_LOCATE)
     dev = PCI_DEV(0, 0x14, 0);
 #else
     dev = pci_locate_device(PCI_ID(0x1002, 0x4385), 0);	/* SMBUS controller */
@@ -168,7 +168,7 @@ void sb7xx_51xx_lpc_init(void)
 	pci_write_config8(dev, 0xBB, reg8);
 #endif
 
-#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+#if IS_ENABLED(CONFIG_SB700_SKIP_PCI_LOCATE)
     dev = PCI_DEV(0, 0x14, 3);
 #else
     dev = pci_locate_device(PCI_ID(0x1002, 0x439d), 0);	/* LPC Controller */
@@ -211,7 +211,7 @@ void sb7xx_51xx_enable_wideio(u8 wio_index, u16 base)
 	pci_devfn_t dev;
 	u8 reg8;
 
-#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+#if IS_ENABLED(CONFIG_SB700_SKIP_PCI_LOCATE)
     dev = PCI_DEV(0, 0x14, 3);
 #else
     dev = pci_locate_device(PCI_ID(0x1002, 0x439d), 0);	/* LPC Controller */
@@ -230,7 +230,7 @@ void sb7xx_51xx_disable_wideio(u8 wio_index)
 	pci_devfn_t dev;
 	u8 reg8;
 
-#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+#if IS_ENABLED(CONFIG_SB700_SKIP_PCI_LOCATE)
     dev = PCI_DEV(0, 0x14, 3);
 #else
     dev = pci_locate_device(PCI_ID(0x1002, 0x439d), 0);	/* LPC Controller */
@@ -248,7 +248,7 @@ u32 get_sbdn(u32 bus)
 	pci_devfn_t dev;
 
 	/* Find the device. */
-#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+#if IS_ENABLED(CONFIG_SB700_SKIP_PCI_LOCATE)
     dev = PCI_DEV(0, 0x14, 0);
 #else
     dev = pci_locate_device_on_bus(PCI_ID(0x1002, 0x4385), bus);
@@ -318,7 +318,7 @@ void sb7xx_51xx_pci_port80(void)
 	pci_devfn_t dev;
 
 	/* P2P Bridge */
-#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+#if IS_ENABLED(CONFIG_SB700_SKIP_PCI_LOCATE)
     dev = PCI_DEV(0, 0x14, 4);
 #else
     dev = pci_locate_device(PCI_ID(0x1002, 0x4384), 0);
@@ -354,7 +354,7 @@ void sb7xx_51xx_pci_port80(void)
 	pci_write_config8(dev, 0x04, byte);
 
 	/* LPC controller */
-#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+#if IS_ENABLED(CONFIG_SB700_SKIP_PCI_LOCATE)
     dev = PCI_DEV(0, 0x14, 3);
 #else
     dev = pci_locate_device(PCI_ID(0x1002, 0x439D), 0);
@@ -372,7 +372,7 @@ void sb7xx_51xx_lpc_port80(void)
 	u32 reg32;
 
 	/* Enable LPC controller */
-#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+#if IS_ENABLED(CONFIG_SB700_SKIP_PCI_LOCATE)
     dev = PCI_DEV(0, 0x14, 0);
 #else
     dev = pci_locate_device(PCI_ID(0x1002, 0x4385), 0);
@@ -383,7 +383,7 @@ void sb7xx_51xx_lpc_port80(void)
 	pci_write_config32(dev, 0x64, reg32);
 
 	/* Enable port 80 LPC decode in pci function 3 configuration space. */
-#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+#if IS_ENABLED(CONFIG_SB700_SKIP_PCI_LOCATE)
     dev = PCI_DEV(0, 0x14, 3);
 #else
     dev = pci_locate_device(PCI_ID(0x1002, 0x439d), 0);
@@ -411,7 +411,7 @@ static void sb700_devices_por_init(void)
 	/* SMBus Device, BDF:0-20-0 */
 	printk(BIOS_INFO, "sb700_devices_por_init(): SMBus Device, BDF:0-20-0\n");
 
-#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+#if IS_ENABLED(CONFIG_SB700_SKIP_PCI_LOCATE)
     dev = PCI_DEV(0, 0x14, 0);
 #else
     dev = pci_locate_device(PCI_ID(0x1002, 0x4385), 0);
@@ -529,7 +529,7 @@ static void sb700_devices_por_init(void)
 	/* IDE Device, BDF:0-20-1 */
 	printk(BIOS_INFO, "sb700_devices_por_init(): IDE Device, BDF:0-20-1\n");
 
-#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+#if IS_ENABLED(CONFIG_SB700_SKIP_PCI_LOCATE)
     dev = PCI_DEV(0, 0x14, 1);
 #else
     dev = pci_locate_device(PCI_ID(0x1002, 0x439C), 0);
@@ -543,7 +543,7 @@ static void sb700_devices_por_init(void)
 	/* LPC Device, BDF:0-20-3 */
 	printk(BIOS_INFO, "sb700_devices_por_init(): LPC Device, BDF:0-20-3\n");
 
-#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+#if IS_ENABLED(CONFIG_SB700_SKIP_PCI_LOCATE)
     dev = PCI_DEV(0, 0x14, 3);
 #else
     dev = pci_locate_device(PCI_ID(0x1002, 0x439D), 0);
@@ -581,7 +581,7 @@ static void sb700_devices_por_init(void)
 	 */
 	printk(BIOS_INFO, "sb700_devices_por_init(): P2P Bridge, BDF:0-20-4\n");
 
-#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+#if IS_ENABLED(CONFIG_SB700_SKIP_PCI_LOCATE)
     dev = PCI_DEV(0, 0x14, 4);
 #else
     dev = pci_locate_device(PCI_ID(0x1002, 0x4384), 0);
@@ -631,7 +631,7 @@ static void sb700_devices_por_init(void)
 	/* SATA Device, BDF:0-17-0, Non-Raid-5 SATA controller */
 	printk(BIOS_INFO, "sb700_devices_por_init(): SATA Device, BDF:0-17-0\n");
 
-#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+#if IS_ENABLED(CONFIG_SB700_SKIP_PCI_LOCATE)
     dev = PCI_DEV(0, 0x11, 0);
 #else
     dev = pci_locate_device(PCI_ID(0x1002, 0x4390), 0);
@@ -696,7 +696,7 @@ static void sb700_pmio_por_init(void)
 		/* RPR2.31 PM_TURN_OFF_MSG during ASF Shutdown. */
         pci_devfn_t d;
 
-#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+#if IS_ENABLED(CONFIG_SB700_SKIP_PCI_LOCATE)
         d = PCI_DEV(0, 0x14, 0);
 #else
         d = pci_locate_device(PCI_ID(0x1002, 0x4385), 0);
@@ -793,7 +793,7 @@ static void sb700_pci_cfg(void)
 	uint8_t acpi_s1_supported = 1;
 
 	/* SMBus Device, BDF:0-20-0 */
-#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+#if IS_ENABLED(CONFIG_SB700_SKIP_PCI_LOCATE)
     dev = PCI_DEV(0, 0x14, 0);
 #else
     dev = pci_locate_device(PCI_ID(0x1002, 0x4385), 0);
@@ -811,7 +811,7 @@ static void sb700_pci_cfg(void)
 	pmio_write(0x65, byte);
 
 	/* IDE Device, BDF:0-20-1 */
-#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+#if IS_ENABLED(CONFIG_SB700_SKIP_PCI_LOCATE)
     dev = PCI_DEV(0, 0x14, 1);
 #else
     dev = pci_locate_device(PCI_ID(0x1002, 0x439C), 0);
@@ -826,7 +826,7 @@ static void sb700_pci_cfg(void)
 	/* The code below is ported from old chipset. It is not
 	 * mentioned in RPR. But I keep them. The registers and the
 	 * comments are compatible. */
-#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+#if IS_ENABLED(CONFIG_SB700_SKIP_PCI_LOCATE)
     dev = PCI_DEV(0, 0x14, 3);
 #else
     dev = pci_locate_device(PCI_ID(0x1002, 0x439D), 0);
@@ -848,7 +848,7 @@ static void sb700_pci_cfg(void)
 	pci_write_config8(dev, 0x78, byte);
 
 	/* SATA Device, BDF:0-17-0, Non-Raid-5 SATA controller */
-#if IS_ENABLED(SB700_SKIP_PCI_LOCATE)
+#if IS_ENABLED(CONFIG_SB700_SKIP_PCI_LOCATE)
     dev = PCI_DEV(0, 0x11, 0);
 #else
     dev = pci_locate_device(PCI_ID(0x1002, 0x4390), 0);
