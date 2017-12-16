@@ -136,3 +136,5 @@ documentation/socketfkconfig.tex
 doxygen/*
 cmake-build-debug
 CMakeLists.txt
+
+.idea
