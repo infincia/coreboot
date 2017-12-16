@@ -72,6 +72,18 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 {
 	outb(0xF5, 0x80);
 
+    ite_enable_serial(SERIAL_DEV, CONFIG_TTYS0_BASE);
+    outb(0xFB, 0x80);
+
+    ite_kill_watchdog(GPIO_DEV);
+    outb(0xFC, 0x80);
+
+    console_init();
+    outb(0xFD, 0x80);
+#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
+    delay(1);
+#endif
+
     struct sys_info *sysinfo = &sysinfo_car;
 	static const u8 spd_addr[] = {RC00, DIMM0, DIMM2, 0, 0, DIMM1, DIMM3, 0, 0, };
 	u32 bsp_apicid = 0, val;
@@ -120,18 +132,6 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 #if !IS_ENABLED(CONFIG_M4A785M_EARLY_POST_CARD)
 	sb7xx_51xx_lpc_init();
 	outb(0xFA, 0x80);
-#endif
-
-	ite_enable_serial(SERIAL_DEV, CONFIG_TTYS0_BASE);
-	outb(0xFB, 0x80);
-
-	ite_kill_watchdog(GPIO_DEV);
-	outb(0xFC, 0x80);
-
-	console_init();
-	outb(0xFD, 0x80);
-#if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
-	delay(1);
 #endif
 
 //	dump_mem(CONFIG_DCACHE_RAM_BASE+CONFIG_DCACHE_RAM_SIZE-0x200, CONFIG_DCACHE_RAM_BASE+CONFIG_DCACHE_RAM_SIZE);
