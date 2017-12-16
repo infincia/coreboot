@@ -95,7 +95,9 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 		outb(0xD2, 0x80);
 
 #if !IS_ENABLED(CONFIG_M4A785M_EARLY_POST_CARD)
+		outb(0xD3, 0x80);
 		sb7xx_51xx_pci_port80();
+		outb(0xD4, 0x80);
 #endif
 
     }
