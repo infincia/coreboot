@@ -70,7 +70,6 @@ int spd_read_byte(u32 device, u32 address)
 
 void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 {
-    post_code(0x20);
 	outb(0xF5, 0x80);
 #if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
 	delay(1);
@@ -85,9 +84,6 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 	delay(1);
 #endif
 
-    post_code(0x21);
-
-
     timestamp_init(timestamp_get());
 	timestamp_add_now(TS_START_ROMSTAGE);
 	outb(0xF7, 0x80);
@@ -95,7 +91,6 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 	delay(1);
 #endif
 
-    post_code(0x22);
 	if (!cpu_init_detectedx && boot_cpu()) {
 		outb(0xD0, 0x80);
 #if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
@@ -105,7 +100,6 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 		/* Nothing special needs to be done to find bus 0 */
 		/* Allow the HT devices to be found */
 		/* mov bsp to bus 0xff when > 8 nodes */
-        post_code(0x23);
 		set_bsp_node_CHtExtNodeCfgEn();
 		outb(0xD1, 0x80);
 #if IS_ENABLED(CONFIG_M4A785M_PAUSE_ON_POST_CODES)
