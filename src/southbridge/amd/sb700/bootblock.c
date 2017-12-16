@@ -154,6 +154,11 @@ static void sb700_early_init(void) {
 	reg32 |= 1 << 31;
 	pci_io_write_config32(sm_dev, 0x4C, reg32);
 
+	/* Enable lpc controller */
+	reg32 = pci_io_read_config32(sm_dev, 0x64);
+	reg32 |= 1 << 20;
+	pci_io_write_config32(sm_dev, 0x64, reg32);
+
 }
 #endif
 
