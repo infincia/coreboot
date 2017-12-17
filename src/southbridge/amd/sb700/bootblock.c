@@ -177,7 +177,7 @@ static void sb700_early_post_card(void)
 	// XXX Serial port decode on LPC is hardcoded to 0x3f8
 	pci_io_write_config8(lpc_dev, 0x44, (1<<6));
 
-	/* Enable LPC decoding of 0x2e/0x2f, 0x4e/0x4f 0x3f8  */
+	/* Enable LPC decoding of 0x2e/0x2f, 0x4e/0x4f */
 	pci_io_write_config8(lpc_dev, 0x48, (1 << 1) | (1 << 0));
 
 	/* Decode port 0x60 & 0x64 (PS/2 keyboard) and port 0x62 & 0x66 (ACPI)*/
