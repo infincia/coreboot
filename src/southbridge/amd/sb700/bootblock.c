@@ -84,14 +84,6 @@ static void sb700_enable_rom(void)
 	 */
 	pci_io_write_config32(dev, 0x44, 0xffffffff);
 
-	/* SB700 LPC Bridge 0x48.
-	 * BIT0: Port Enable for SuperIO 0x2E-0x2F
-	 * BIT1: Port Enable for SuperIO 0x4E-0x4F
-	 * BIT6: Port Enable for RTC IO 0x70-0x73
-	 */
-	reg8 = pci_io_read_config8(dev, IO_MEM_PORT_DECODE_ENABLE_5);
-	reg8 |= (1 << 0) | (1 << 1) | (1 << 6);
-	pci_io_write_config8(dev, IO_MEM_PORT_DECODE_ENABLE_5, reg8);
 }
 
 static void sb700_configure_rom(void)
