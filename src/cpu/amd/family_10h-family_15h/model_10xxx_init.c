@@ -253,6 +253,7 @@ static const struct cpu_device_id cpu_table[] = {
 	{ X86_VENDOR_AMD, 0x100f42 },           /* RB-C2 */
 	{ X86_VENDOR_AMD, 0x100f43 },           /* RB-C3 */
 	{ X86_VENDOR_AMD, 0x100f52 },           /* BL-C2 */
+	{ X86_VENDOR_AMD, 0x100f53 },           /* BL-C3 */
 	{ X86_VENDOR_AMD, 0x100f62 },           /* DA-C2 */
 	{ X86_VENDOR_AMD, 0x100f63 },           /* DA-C3 */
 	{ X86_VENDOR_AMD, 0x100f80 },           /* HY-D0 */
