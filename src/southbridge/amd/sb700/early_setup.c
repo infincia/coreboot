@@ -558,9 +558,9 @@ static void sb700_devices_por_init(void)
 #endif
 
 	/* Disable prefetch */
-	byte = pci_read_config8(dev, 0x63);
-	byte |= 0x1;
-	pci_write_config8(dev, 0x63, byte);
+	//byte = pci_read_config8(dev, 0x63);
+	//byte |= 0x1;
+	//pci_write_config8(dev, 0x63, byte);
 
 	/* LPC Device, BDF:0-20-3 */
 	printk(BIOS_INFO, "sb700_devices_por_init(): LPC Device, BDF:0-20-3\n");
