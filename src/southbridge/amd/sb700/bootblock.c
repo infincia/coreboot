@@ -119,8 +119,12 @@ static void sb700_configure_rom(void)
 static void sb700_early_init(void) {
 	pci_devfn_t ht_dev;
 	ht_dev = PCI_DEV(0, 0x18, 1);
+	u8 reg8;
 
+	pci_devfn_t lpc_dev;
 	pci_devfn_t sm_dev;
+
+	lpc_dev = PCI_DEV(0, 0x14, 3);
 	sm_dev = PCI_DEV(0, 0x14, 0);
 
 	/* route FED00000 - FEDFFFFF as non-posted to SB */
@@ -151,20 +155,6 @@ static void sb700_early_init(void) {
 	reg32 |= 1 << 20;
 	pci_io_write_config32(sm_dev, 0x64, reg32);
 
-}
-#endif
-
-#if IS_ENABLED(CONFIG_M4A785M_EARLY_POST_CARD)
-static void sb700_early_post_card(void)
-{
-	u8 reg8;
-
-	pci_devfn_t pci_dev;
-	pci_devfn_t lpc_dev;
-
-	lpc_dev = PCI_DEV(0, 0x14, 3);
-	pci_dev = PCI_DEV(0, 0x14, 4);
-
 	/* Decode port 0x3f8-0x3ff (Serial 0) */
 	// XXX Serial port decode on LPC is hardcoded to 0x3f8
 	pci_io_write_config8(lpc_dev, 0x44, (1<<6));
@@ -191,6 +181,19 @@ static void sb700_early_post_card(void)
 	reg8 |= (1 << 6);
 	pci_io_write_config8(lpc_dev, 0x48, reg8);
 
+}
+#endif
+
+#if IS_ENABLED(CONFIG_M4A785M_EARLY_POST_CARD)
+static void sb700_early_post_card(void)
+{
+	u8 reg8;
+
+	pci_devfn_t pci_dev;
+	pci_devfn_t lpc_dev;
+
+	lpc_dev = PCI_DEV(0, 0x14, 3);
+	pci_dev = PCI_DEV(0, 0x14, 4);
 
 	/* Chip Control: Enable subtractive decoding */
 	reg8 = pci_io_read_config8(pci_dev, 0x40);
