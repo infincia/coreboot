@@ -505,9 +505,12 @@ static void sb700_devices_por_init(void)
 	byte |= 0x1 << 1;
 	pci_write_config8(dev, 0x67, byte);
 
-	/* Disabling Legacy USB Fast SMI# */
 	byte = pci_read_config8(dev, 0x62);
-	byte |= 0x24;
+	/* K8_INTR */
+	byte |= 0x1 << 2;
+	/* Disabling Legacy USB Fast SMI# */
+	/* SB700 RRG marks bit5 reserved, may still work */
+	byte |= 0x1 << 5;
 	pci_write_config8(dev, 0x62, byte);
 
 	/* Configure HPET Counter CLK period */
