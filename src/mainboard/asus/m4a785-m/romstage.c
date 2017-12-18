@@ -70,45 +70,26 @@ int spd_read_byte(u32 device, u32 address)
 
 void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 {
-	post_code(0xF5);
-
     ite_enable_serial(SERIAL_DEV, CONFIG_TTYS0_BASE);
-    post_code(0xFB);
-
     ite_kill_watchdog(GPIO_DEV);
-    post_code(0xFC);
-
     console_init();
-    post_code(0xFD);
-
     struct sys_info *sysinfo = &sysinfo_car;
 	static const u8 spd_addr[] = {RC00, DIMM0, DIMM2, 0, 0, DIMM1, DIMM3, 0, 0, };
 	u32 bsp_apicid = 0, val;
 	msr_t msr;
-	post_code(0xF6);
 
     timestamp_init(timestamp_get());
 	timestamp_add_now(TS_START_ROMSTAGE);
-	post_code(0xF7);
 
 	if (!cpu_init_detectedx && boot_cpu()) {
-		post_code(0xD0);
-
 		/* Nothing special needs to be done to find bus 0 */
 		/* Allow the HT devices to be found */
 		/* mov bsp to bus 0xff when > 8 nodes */
 		set_bsp_node_CHtExtNodeCfgEn();
-		post_code(0xD1);
-
 		enumerate_ht_chain();
-		post_code(0xD2);
-
 #if !IS_ENABLED(CONFIG_M4A785M_EARLY_POST_CARD)
-		post_code(0xD3);
 		sb7xx_51xx_pci_port80();
-		post_code(0xD4);
 #endif
-
     }
 
 	post_code(0x30);
