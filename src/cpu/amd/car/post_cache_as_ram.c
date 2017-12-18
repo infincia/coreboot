@@ -185,28 +185,28 @@ asmlinkage void cache_as_ram_new_stack(void)
 	print_car_debug("Disabling cache as RAM now\n");
 	disable_cache_as_ram_real(0);	// inline
 
-	outb(0xb0, 0x80);
+    __asm__ __volatile__("outb %b0, %w1" : : "a"(0xb0), "Nd"(0x80));
 
 	disable_cache();
 
-	outb(0xb1, 0x80);
+    __asm__ __volatile__("outb %b0, %w1" : : "a"(0xb1), "Nd"(0x80));
 
 	/* Enable cached access to RAM in the range 0M to CACHE_TMP_RAMTOP */
 	set_var_mtrr(0, 0x00000000, CACHE_TMP_RAMTOP, MTRR_TYPE_WRBACK);
 
-	outb(0xb2, 0x80);
+    __asm__ __volatile__("outb %b0, %w1" : : "a"(0xb2), "Nd"(0x80));
 
 	enable_cache();
 
-	outb(0xb3, 0x80);
+    __asm__ __volatile__("outb %b0, %w1" : : "a"(0xb3), "Nd"(0x80));
 
 	prepare_ramstage_region(acpi_is_wakeup_s3());
 
-	outb(0xb4, 0x80);
+    __asm__ __volatile__("outb %b0, %w1" : : "a"(0xb4), "Nd"(0x80));
 
 	set_sysinfo_in_ram(1); // So other core0 could start to train mem
 
-	outb(0xb5, 0x80);
+    __asm__ __volatile__("outb %b0, %w1" : : "a"(0xb5), "Nd"(0x80));
 
 	/*copy and execute ramstage */
 	print_car_debug("cache_as_ram_new_stack(): copy_and_run\n");
