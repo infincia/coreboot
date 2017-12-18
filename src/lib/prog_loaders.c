@@ -124,6 +124,8 @@ static int load_nonrelocatable_ramstage(struct prog *ramstage)
 
 void run_ramstage(void)
 {
+	printk(BIOS_DEBUG, "run_ramstage()\n");
+
 	struct prog ramstage =
 		PROG_INIT(PROG_RAMSTAGE, CONFIG_CBFS_PREFIX "/ramstage");
 
@@ -152,6 +154,8 @@ void run_ramstage(void)
 	stage_cache_add(STAGE_RAMSTAGE, &ramstage);
 
 	timestamp_add_now(TS_END_COPYRAM);
+
+	printk(BIOS_DEBUG, "run_ramstage(): prog_run()\n");
 
 	prog_run(&ramstage);
 
