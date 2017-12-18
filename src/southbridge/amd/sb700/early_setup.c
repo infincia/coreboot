@@ -496,6 +496,7 @@ static void sb700_devices_por_init(void)
 	/* pci_write_config8(dev, 0x43, 0x1); */
 
 	/* Enable DMA verify bugfix */
+	// RRG marks this reserved */
 	byte = pci_read_config8(dev, 0x67);
 	byte |= 0x1 << 1;
 	pci_write_config8(dev, 0x67, byte);
