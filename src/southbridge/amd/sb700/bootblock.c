@@ -149,12 +149,12 @@ static void sb700_early_init(void) {
 	reg32 |= 1 << 20;
 	pci_io_write_config32(sm_dev, 0x64, reg32);
 
+	reg8 = pci_io_read_config8(lpc_dev, 0x44);
 	/* Decode port 0x3f8-0x3ff (Serial 0) */
-	// XXX Serial port decode on LPC is hardcoded to 0x3f8
-	pci_io_write_config8(lpc_dev, 0x44, (1<<6));
-
-	/* Decode port 0x2f8-0x2ff (Serial 1) */
-	pci_io_write_config8(lpc_dev, 0x44, (1 << 7));
+    reg8 |= (1 << 6);
+    /* Decode port 0x2f8-0x2ff (Serial 1) */
+    reg8 |= (1 << 7);
+	pci_io_write_config8(lpc_dev, 0x44, reg8);
 
 	/* Enable LPC decoding of 0x2e/0x2f, 0x4e/0x4f */
 	pci_io_write_config8(lpc_dev, 0x48, (1 << 1) | (1 << 0));
