@@ -467,10 +467,12 @@ static void sb700_devices_por_init(void)
 	pci_write_config8(dev, 0x40, 0x44);
 
 	/* Enable ISA Address 0-960K decoding */
-	pci_write_config8(dev, 0x48, 0x0f);
+	// RRG says this should not be written, already defaults to same value
+	//pci_write_config8(dev, 0x48, 0x0f);
 
 	/* Enable ISA  Address 0xC0000-0xDFFFF decode */
-	pci_write_config8(dev, 0x49, 0xff);
+	// RRG says this should not be written, already defaults to same value
+	//pci_write_config8(dev, 0x49, 0xff);
 
 	/* Enable decode cycles to IO C50, C51, C52 GPM controls. */
 	byte = pci_read_config8(dev, 0x41);
