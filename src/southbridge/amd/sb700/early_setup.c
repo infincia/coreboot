@@ -522,7 +522,74 @@ static void sb700_devices_por_init(void)
 	pci_write_config8(dev, 0x43, byte);
 
 	/* Features Enable */
-	pci_write_config32(dev, 0x64, 0x829E79BF); /* bit10: Enables the HPET interrupt. */
+	/* original code is a magic number */
+	//pci_write_config32(dev, 0x64, 0x829E79BF); /* bit10: Enables the HPET interrupt. */
+	dword = pci_read_config32(dev, 0x64);
+	// PIC_Enable
+	dword |= 0x1 << 0;
+	// Timer_Enable
+	dword |= 0x1 << 1;
+	// PMIO_Register Enable
+	dword |= 0x1 << 2;
+	// Ioapic_enable
+	dword |= 0x1 << 3;
+	// CheckOwnReq
+	dword |= 0x1 << 4;
+	// BmReqEnable
+	dword |= 0x1 << 5;
+	// Reserved
+	//dword |= 0x0 << 6;
+	// XIOAPIC_ENA
+	dword |= 0x1 << 7;
+	// GEVENT5_ENA
+	dword |= 0x1 << 8;
+	// Ext_KBRST_EnB
+	dword |= 0x0 << 9;
+	// HPETIrqEn
+	dword |= 0x0 << 10;
+	// Ext_A20En
+	dword |= 0x1 << 11;
+	// Smi_Gevent_En
+	dword |= 0x1 << 12;
+	// Intr_block_En
+	dword |= 0x1 << 13;
+	// ApicPort02Swap
+	dword |= 0x1 << 14;
+	// ApicPort02Swap
+	dword |= 0x0 << 15;
+	// Serr2Smi_En
+	dword |= 0x0 << 16;
+	// Gevent1_en0
+	dword |= 0x1 << 17;
+	// Gevent1_en1
+	dword |= 0x1 << 18;
+	// Gevent1_en2
+	dword |= 0x1 << 19;
+	// LpcEnable
+	dword |= 0x1 << 20;
+	// RtcSelect
+	dword |= 0x0 << 21;
+	// Gevent1_en3
+	dword |= 0x0 << 22;
+	// Gevent1_en4
+	dword |= 0x1 << 23;
+	// Reserved
+	//dword |= 0x0 << 24;
+	// DmaVerifyEn
+	dword |= 0x1 << 25;
+	// IRQ1MergeEn
+	dword |= 0x0 << 26;
+	// IRQ12MergeEn
+	dword |= 0x0 << 27;
+	// Reserved
+	//dword |= 0x0 << 28;
+	//dword |= 0x0 << 29;
+	// UsbA20En
+	dword |= 0x0 << 30;
+	// UsbLegacyIrqEn
+	dword |= 0x1 << 31;
+	pci_write_config32(dev, 0x64, dword);
+
 
 	/* SerialIrq Control */
 	pci_write_config8(dev, 0x69, 0x90);
