@@ -464,7 +464,11 @@ static void sb700_devices_por_init(void)
 	}
 
 	/* KB2RstEnable */
-	pci_write_config8(dev, 0x40, 0x44);
+	byte = pci_read_config8(dev, 0x40);
+	byte |= 0x1 << 2;
+	/* pci_io_en */
+	byte |= 0x1 << 6;
+	pci_write_config8(dev, 0x40, byte);
 
 	/* Enable ISA Address 0-960K decoding */
 	// RRG says this should not be written, already defaults to same value
