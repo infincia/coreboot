@@ -598,8 +598,12 @@ CAR_FAM10_ap_out:
 
 	call	cache_as_ram_main
 
+	post_code(0xa8)
+
 	call	post_cache_as_ram
 	movl	%eax, %esp
+
+	post_code(0xa9)
 
 	call	cache_as_ram_new_stack
 
