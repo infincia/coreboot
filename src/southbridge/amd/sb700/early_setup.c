@@ -476,8 +476,20 @@ static void sb700_devices_por_init(void)
 
 	/* Enable decode cycles to IO C50, C51, C52 GPM controls. */
 	byte = pci_read_config8(dev, 0x41);
-	byte &= 0x80;
-	byte |= 0x33;
+	/* reserved */
+	//byte |= 0x1 << 0;
+	//byte |= 0x1 << 1;
+    //byte |= 0x1 << 2;
+	/* WatchDogDecodeEn */
+	byte |= 0x1 << 3;
+    /* reserved */
+    //byte |= 0x1 << 4;
+	/* MiscfuncEnable */
+	byte |= 0x1 << 5;
+	/* Retry21_en */
+	byte |= 0x1 << 6;
+	/* RetryDma */
+	//byte |= 0x1 << 7;
 	pci_write_config8(dev, 0x41, byte);
 
 	/* Legacy DMA Prefetch Enhancement, CIM masked it. */
