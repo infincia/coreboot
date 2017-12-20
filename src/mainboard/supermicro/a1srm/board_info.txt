@@ -1,0 +1,4 @@
+Category: server
+ROM protocol: SPI
+Flashrom support: y
+Release year: 2014

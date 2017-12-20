@@ -1,0 +1,2 @@
+config BOARD_SUPERMICRO_A1SRM
+	bool "Supermicro A1SRM"

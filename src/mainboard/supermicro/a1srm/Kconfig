@@ -1,0 +1,81 @@
+##
+## This file is part of the coreboot project.
+##
+## Copyright (C) 2017 Infincia LLC
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; version 2 of the License.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+
+if BOARD_SUPERMICRO_A1SRM
+
+config BOARD_SPECIFIC_OPTIONS # dummy
+	def_bool y
+	select CPU_INTEL_SOCKET_RPGA989
+	select NORTHBRIDGE_INTEL_FSP_RANGELEY
+	select SOUTHBRIDGE_INTEL_FSP_RANGELEY
+	select BOARD_ROMSIZE_KB_16384
+	select HAVE_ACPI_TABLES
+	select HAVE_OPTION_TABLE
+	select HAVE_FSP_BIN if FSP_PACKAGE_DEFAULT
+
+config MAINBOARD_DIR
+	string
+	default supermicro/a1srm
+
+config MAINBOARD_PART_NUMBER
+	string
+	default "Supermicro A1SRM"
+
+config MAX_CPUS
+	int
+	default 16
+
+config CACHE_ROM_SIZE_OVERRIDE
+	hex
+	default 0x800000
+
+config FSP_FILE
+	string
+	default "../intel/fsp/rangeley/FvFsp.bin"
+
+config CBFS_SIZE
+	hex
+	default 0x00200000
+
+config ENABLE_FSP_FAST_BOOT
+	bool
+	depends on HAVE_FSP_BIN
+	default y
+
+config VIRTUAL_ROM_SIZE
+	hex
+	depends on ENABLE_FSP_FAST_BOOT
+	default 0x400000
+
+config FSP_PACKAGE_DEFAULT
+	bool "Configure defaults for the Intel FSP package"
+	default n
+
+config UART_FOR_CONSOLE
+	int
+	default 1
+	help
+	  A1SRM board has 2 serial ports, and the rear RJ45 is on 0x2f8
+
+config PAYLOAD_CONFIGFILE
+	string
+	depends on PAYLOAD_SEABIOS
+	default "$(top)/src/mainboard/$(MAINBOARDDIR)/config_seabios"
+	help
+	  The Avoton/Rangeley chip does not allow devices to write into the 0xe000
+	  segment.  This means that USB/SATA devices will not work in SeaBIOS unless
+	  we put the SeaBIOS buffer area down in the 0x9000 segment.
+
+endif # BOARD_SUPERMICRO_A1SRM
