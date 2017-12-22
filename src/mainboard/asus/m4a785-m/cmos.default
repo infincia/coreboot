@@ -8,4 +8,7 @@ power_on_after_fail=Disable
 debug_level=Spew
 slow_cpu=off
 nmi=Enable
+hypertransport_speed_limit = Auto
+sata_ahci_mode = Enable
+sata_alpm = Disable
 gart=Enable
