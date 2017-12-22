@@ -127,19 +127,6 @@ static void set_thermal_config(void)
 	u16 word;
 	device_t sm_dev;
 
-	/* set ADT 7461 */
-	ADT7461_write_byte(0x0B, 0x50);	/* Local Temperature Hight limit */
-	ADT7461_write_byte(0x0C, 0x00);	/* Local Temperature Low limit */
-	ADT7461_write_byte(0x0D, 0x50);	/* External Temperature Hight limit  High Byte */
-	ADT7461_write_byte(0x0E, 0x00);	/* External Temperature Low limit High Byte */
-
-	ADT7461_write_byte(0x19, 0x55);	/* External THERM limit */
-	ADT7461_write_byte(0x20, 0x55);	/* Local THERM limit */
-
-	byte = ADT7461_read_byte(0x02);	/* read status register to clear it */
-	ARA_read_byte(0x05); /* A hardware alert can only be cleared by the master sending an ARA as a read command */
-	printk(BIOS_INFO, "Init adt7461 end , status 0x02 %02x\n", byte);
-
 	/* sb700 settings for thermal config */
 	/* set SB700 GPIO 64 to GPIO with pull-up */
 	byte = pm2_ioread(0x42);
