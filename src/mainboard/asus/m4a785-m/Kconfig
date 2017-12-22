@@ -41,7 +41,7 @@ config MAX_CPUS
 
 config MAX_PHYSICAL_CPUS
 	int
-	default 2
+	default 1
 
 config HT_CHAIN_END_UNITID_BASE
 	hex
