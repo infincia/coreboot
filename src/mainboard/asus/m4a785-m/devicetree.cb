@@ -20,8 +20,8 @@ chip northbridge/amd/amdfam10/root_complex
 					device pci 6.0 off end # PCIE P2P bridge 0x9606
 					device pci 7.0 off end # PCIE P2P bridge 0x9607
 					device pci 8.0 off end # NB/SB Link P2P bridge
-					device pci 9.0 off end #
-					device pci a.0 on end # bridge to RTL8111/8168B PCI Express Gigabit Ethernet
+					device pci 9.0 off end # PCIE-GPP Port A
+					device pci a.0 on end # PCIE-GPP Port B, bridge to RTL8111/8168B PCI Express Gigabit Ethernet
 					register "gppsb_configuration" = "1"   # Configuration B
 					register "gpp_configuration" = "3"   # Configuration D default
 					register "port_enable" = "0x6fc"
