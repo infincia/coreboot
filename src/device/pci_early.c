@@ -19,6 +19,7 @@
 #include <device/pci.h>
 #include <device/pci_def.h>
 #include <delay.h>
+#include <console/console.h>
 
 #ifdef __PRE_RAM__
 unsigned pci_find_next_capability(pci_devfn_t dev, unsigned cap, unsigned last)
