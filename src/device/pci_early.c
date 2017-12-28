@@ -153,10 +153,16 @@ void pci_early_bridge_init(void)
 	post_code(0x29);
 
 	for (timeout = 20000; timeout; timeout--) {
+		post_code(0x50);
 		u32 id = pci_read_config32(PCI_DEV(secondary, dev, 0), PCI_VENDOR_ID);
-		if (id != 0 && id != 0xffffffff && id != 0xffff0001)
+		post_code(0x51);
+		if (id != 0 && id != 0xffffffff && id != 0xffff0001) {
+			post_code(0x52);
 			break;
+		}
+		post_code(0x53);
 		udelay(10);
+		post_code(0x54);
 	}
 
 	post_code(0x2A);
