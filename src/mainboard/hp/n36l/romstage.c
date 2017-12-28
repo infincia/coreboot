@@ -87,30 +87,49 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 	post_code(0x30);
 
 	if (bist == 0) {
+		post_code(0xC0);
+
 		bsp_apicid = init_cpus(cpu_init_detectedx, sysinfo); /* mmconf is inited in init_cpus */
 		/* All cores run this but the BSP(node0,core0) is the only core that returns. */
+		post_code(0xC1);
 	}
 
 	post_code(0x32);
 
 	enable_rs780_dev8();
+	post_code(0xF9);
+
 	sb800_clk_output_48Mhz();
 
+	post_code(0xFA);
+
 	console_init();
+	post_code(0xFE);
+
 	printk(BIOS_DEBUG, "\n");
+
+	post_code(0xFF);
 
 	/* Halt if there was a built in self test failure */
 	report_bist_failure(bist);
 
+	post_code(0xC2);
+
 	/* Load MPB */
 	val = cpuid_eax(1);
+	post_code(0xC3);
+
 	printk(BIOS_DEBUG, "BSP Family_Model: %08x\n", val);
 	printk(BIOS_DEBUG, "*sysinfo range: [%p,%p]\n",sysinfo,sysinfo+1);
 	printk(BIOS_DEBUG, "bsp_apicid = %02x\n", bsp_apicid);
 	printk(BIOS_DEBUG, "cpu_init_detectedx = %08lx\n", cpu_init_detectedx);
 
+	post_code(0xC4);
+
 	/* Setup sysinfo defaults */
 	set_sysinfo_in_ram(0);
+	post_code(0xC5);
+
 
 	update_microcode(val);
 
@@ -124,6 +143,7 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 
 	/* Setup nodes PCI space and start core 0 AP init. */
 	finalize_node_setup(sysinfo);
+	post_code(0xC6);
 
 	/* Setup any mainboard PCI settings etc. */
 	setup_mb_resource_map();
@@ -136,6 +156,7 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 	   of the BSP located right after sysinfo.
 	 */
 	wait_all_core0_started();
+	post_code(0xC7);
 
 #if CONFIG_LOGICAL_CPUS
 	/* Core0 on each node is configured. Now setup any additional cores. */
@@ -149,18 +170,30 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 
 	/* run _early_setup before soft-reset. */
 	rs780_early_setup();
+	post_code(0xC8);
+
 	sb800_early_setup();
+	post_code(0xC8);
 
 #if IS_ENABLED(CONFIG_SET_FIDVID)
+	post_code(0xC9);
+
 	msr = rdmsr(0xc0010071);
+	post_code(0xCA);
+
 	printk(BIOS_DEBUG, "\nBegin FIDVID MSR 0xc0010071 0x%08x 0x%08x\n", msr.hi, msr.lo);
 	post_code(0x39);
 
 	enable_fid_change_on_sb(sysinfo->sbbusn, sysinfo->sbdn);
+	post_code(0xCB);
 
 	if (!warm_reset_detect(0)) {			/* BSP is node 0 */
+		post_code(0xCC);
+
 		init_fidvid_bsp(bsp_apicid, sysinfo->nodes);
 	} else {
+		post_code(0xCD);
+
 		init_fidvid_stage2(bsp_apicid, 0);	/* BSP is node 0 */
 	}
 
@@ -171,10 +204,14 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 	printk(BIOS_DEBUG, "End FIDVIDMSR 0xc0010071 0x%08x 0x%08x\n", msr.hi, msr.lo);
 #endif
 
+	post_code(0xCE);
+
 	rs780_htinit();
 
 	/* Reset for HT, FIDVID, PLL and errata changes to take affect. */
 	if (!warm_reset_detect(0)) {
+		post_code(0xCF);
+
 		printk(BIOS_INFO, "...WARM RESET...\n\n\n");
 		soft_reset();
 		die("After soft_reset - shouldn't see this message!!!\n");
@@ -189,14 +226,21 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 	post_code(0x40);
 
 	timestamp_add_now(TS_BEFORE_INITRAM);
+
+	post_code(0xD0);
+
 	printk(BIOS_DEBUG, "raminit_amdmct()\n");
 	raminit_amdmct(sysinfo);
+	post_code(0xD1);
+
 	timestamp_add_now(TS_AFTER_INITRAM);
+	post_code(0xD2);
 
 	cbmem_initialize_empty();
 	post_code(0x41);
 
 	amdmct_cbmem_store_info(sysinfo);
+	post_code(0xD3);
 
 	sb800_before_pci_init();
 
