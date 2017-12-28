@@ -140,9 +140,16 @@ void pci_early_bridge_init(void)
 	u32 mmio_base = CONFIG_EARLY_PCI_MMIO_BASE;
 
 	/* Enable configuration and MMIO over bridge. */
+	post_code(0x26);
+
 	pci_bridge_reset_secondary(p2p_bridge);
+	post_code(0x27);
+
 	pci_bridge_set_secondary(p2p_bridge, secondary);
+	post_code(0x28);
+
 	pci_bridge_set_mmio(p2p_bridge, mmio_base, 0x4000);
+	post_code(0x29);
 
 	for (timeout = 20000; timeout; timeout--) {
 		u32 id = pci_read_config32(PCI_DEV(secondary, dev, 0), PCI_VENDOR_ID);
@@ -151,17 +158,25 @@ void pci_early_bridge_init(void)
 		udelay(10);
 	}
 
+	post_code(0x2A);
+
 	if (timeout != 0)
 		ret = pci_early_device_probe(secondary, dev, mmio_base);
+
+	post_code(0x2B);
 
 	/* Disable MMIO window if we found no suitable device. */
 	if (ret)
 		pci_bridge_set_mmio(p2p_bridge, 0, 0);
+
+	post_code(0x2C);
 
 	/* Resource allocator will reconfigure bridges and secondary bus
 	 * number may change. Thus early device cannot reliably use config
 	 * transactions from here on, so we may as well disable them.
 	 */
 	pci_bridge_set_secondary(p2p_bridge, 0);
+
+	post_code(0x2D);
 }
 #endif /* CONFIG_EARLY_PCI_BRIDGE */
