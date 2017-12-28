@@ -103,13 +103,6 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 
 	post_code(0xFA);
 
-	console_init();
-	post_code(0xFE);
-
-	printk(BIOS_DEBUG, "\n");
-
-	post_code(0xFF);
-
 	/* Halt if there was a built in self test failure */
 	report_bist_failure(bist);
 
@@ -118,11 +111,6 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 	/* Load MPB */
 	val = cpuid_eax(1);
 	post_code(0xC3);
-
-	printk(BIOS_DEBUG, "BSP Family_Model: %08x\n", val);
-	printk(BIOS_DEBUG, "*sysinfo range: [%p,%p]\n",sysinfo,sysinfo+1);
-	printk(BIOS_DEBUG, "bsp_apicid = %02x\n", bsp_apicid);
-	printk(BIOS_DEBUG, "cpu_init_detectedx = %08lx\n", cpu_init_detectedx);
 
 	post_code(0xC4);
 
@@ -160,7 +148,6 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 
 #if CONFIG_LOGICAL_CPUS
 	/* Core0 on each node is configured. Now setup any additional cores. */
-	printk(BIOS_DEBUG, "start_other_cores()\n");
 	start_other_cores(bsp_apicid);
 	post_code(0x37);
 	wait_all_other_cores_started(bsp_apicid);
@@ -171,6 +158,17 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 	/* run _early_setup before soft-reset. */
 	rs780_early_setup();
 	post_code(0xC8);
+
+	console_init();
+	post_code(0xFE);
+
+	printk(BIOS_DEBUG, "\n");
+
+
+	printk(BIOS_DEBUG, "BSP Family_Model: %08x\n", val);
+	printk(BIOS_DEBUG, "*sysinfo range: [%p,%p]\n",sysinfo,sysinfo+1);
+	printk(BIOS_DEBUG, "bsp_apicid = %02x\n", bsp_apicid);
+	printk(BIOS_DEBUG, "cpu_init_detectedx = %08lx\n", cpu_init_detectedx);
 
 	sb800_early_setup();
 	post_code(0xC8);
