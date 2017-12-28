@@ -81,7 +81,7 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 
 		/* enable port80 decoding and southbridge poweron init */
 		sb800_lpc_init();
-		sb800_pci_port80();
+		sb800_lpc_port80();
 	}
 
 	post_code(0x30);
