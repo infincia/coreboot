@@ -43,7 +43,7 @@ config MAX_CPUS
 
 config MAX_PHYSICAL_CPUS
 	int
-	default 1
+	default 2
 
 config HW_MEM_HOLE_SIZE_AUTO_INC
 	bool
