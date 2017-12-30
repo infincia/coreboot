@@ -66,10 +66,10 @@ int console_log_level(int msg_level)
 
 asmlinkage void console_init(void)
 {
-	post_code(0x20);
+	post_code(0x90);
 
 	init_log_level();
-	post_code(0x21);
+	post_code(0x91);
 
 #if IS_ENABLED(CONFIG_EARLY_PCI_BRIDGE) && !defined(__SMM__)
 	post_code(0x22);
@@ -77,14 +77,14 @@ asmlinkage void console_init(void)
 	pci_early_bridge_init();
 #endif
 
-	post_code(0x23);
+	post_code(0x93);
 
 	console_hw_init();
 
-	post_code(0x24);
+	post_code(0x94);
 
 	printk(BIOS_NOTICE, "\n\ncoreboot-%s%s %s " ENV_STRING " starting...\n",
 	       coreboot_version, coreboot_extra_version, coreboot_build);
 
-	post_code(0x25);
+	post_code(0x95);
 }
