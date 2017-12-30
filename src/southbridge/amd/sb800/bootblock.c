@@ -35,7 +35,12 @@ static void sb800_enable_rom(void)
 
 	/* Decode variable LPC ROM address ranges 1 and 2. */
 	reg8 = pci_io_read_config8(dev, 0x48);
-	reg8 |= (1 << 3) | (1 << 4);
+	if (IS_ENABLED(CONFIG_SPI_FLASH))
+		/* Disable decode of variable LPC ROM address ranges 1 and 2. */
+		reg8 &= ~((1 << 3) | (1 << 4));
+	else
+		/* Decode variable LPC ROM address ranges 1 and 2. */
+		reg8 |= (1 << 3) | (1 << 4);
 	pci_io_write_config8(dev, 0x48, reg8);
 
 	/* LPC ROM address range 1: */
