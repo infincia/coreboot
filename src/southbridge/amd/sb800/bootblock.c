@@ -56,6 +56,7 @@ static void sb800_enable_rom(void)
 	 * 0xfff0(0000): 1MB
 	 * 0xffe0(0000): 2MB
 	 * 0xffc0(0000): 4MB
+	 * 0xff80(0000): 8MB
 	 */
 	pci_io_write_config16(dev, 0x6c, 0x10000 - (CONFIG_COREBOOT_ROMSIZE_KB >> 6));
 	/* Enable LPC ROM range end at 0xffff(ffff). */
