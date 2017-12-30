@@ -329,7 +329,9 @@ restartinit:
 	post_code(0xBF);
 
 	mct_FinalMCT_D(pMCTstat, (pDCTstatA + 0));	// Node 0
+	post_code(0xE6);
 	print_tx("mctAutoInitMCT_D Done: Global Status: ", pMCTstat->GStatus);
+	post_code(0xE7);
 	return;
 
 fatalexit:
