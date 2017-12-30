@@ -650,11 +650,17 @@ void usbdebug_disable(void)
 
 static int usbdebug_hw_init(void)
 {
+	post_code(0x60);
+
 	struct ehci_debug_info *dbg_info = dbgp_ehci_info();
 	unsigned int ehci_base, dbg_offset;
+	post_code(0x61);
 
-	if (ehci_debug_hw_enable(&ehci_base, &dbg_offset))
+	if (ehci_debug_hw_enable(&ehci_base, &dbg_offset)) {
+		post_code(0x62);
 		return -1;
+	}
+	post_code(0x63);
 	return usbdebug_init_(ehci_base, dbg_offset, dbg_info);
 }
 
@@ -715,16 +721,20 @@ struct dbgp_pipe *dbgp_console_input(void)
 
 void usbdebug_init(void)
 {
+	post_code(0x70);
 	/* USB console init is done early in romstage, yet delayed to
 	 * CBMEM_INIT_HOOKs for postcar and ramstage as we recover state
 	 * from CBMEM.
 	 */
 	if (IS_ENABLED(CONFIG_USBDEBUG_IN_ROMSTAGE) && ENV_ROMSTAGE)
 		usbdebug_hw_init();
+	post_code(0x71);
 
 	/* USB console init is done early in ramstage if it was
 	 * not done in romstage, this does not require CBMEM.
 	 */
 	if (!IS_ENABLED(CONFIG_USBDEBUG_IN_ROMSTAGE) && ENV_RAMSTAGE)
 		usbdebug_hw_init();
+	post_code(0x72);
+
 }

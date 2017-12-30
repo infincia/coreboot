@@ -23,18 +23,27 @@
 #include <console/spi.h>
 #include <console/flash.h>
 #include <rules.h>
+#include <console/console.h>
 
 void console_hw_init(void)
 {
+	post_code(0x80);
 	__cbmemc_init();
+	post_code(0x81);
 	__spkmodem_init();
+	post_code(0x82);
 	__qemu_debugcon_init();
-
+	post_code(0x83);
 	__uart_init();
+	post_code(0x84);
 	__ne2k_init();
+	post_code(0x85);
 	__usbdebug_init();
+	post_code(0x86);
 	__spiconsole_init();
+	post_code(0x87);
 	__flashconsole_init();
+	post_code(0x88);
 }
 
 void console_tx_byte(unsigned char byte)
