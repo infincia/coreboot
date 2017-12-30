@@ -80,7 +80,6 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 		enumerate_ht_chain();
 
 		/* enable port80 decoding and southbridge poweron init */
-		sb800_lpc_init();
 		sb800_lpc_port80();
 		inb(0x80); 	/* Wait sometime before post to port80, otherwise reset was needed. */
 	}
@@ -98,6 +97,10 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 	post_code(0x32);
 
 	enable_rs780_dev8();
+	post_code(0xF8);
+
+	sb800_lpc_init();
+
 	post_code(0xF9);
 
 	sb800_clk_output_48Mhz();
