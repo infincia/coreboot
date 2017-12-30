@@ -36,6 +36,7 @@
 #include "mct_d.h"
 
 #include <string.h>
+#include <console/console.h>
 
 static u8 ReconfigureDIMMspare_D(struct MCTStatStruc *pMCTstat,
 					struct DCTStatStruc *pDCTstatA);
@@ -215,11 +216,17 @@ void mctAutoInitMCT_D(struct MCTStatStruc *pMCTstat,
 	 */
 	u8 Node, NodesWmem;
 	u32 node_sys_base;
+	post_code(0xB0);
+
 
 restartinit:
+	post_code(0xB1);
+
 	mctInitMemGPIOs_A_D();		/* Set any required GPIOs*/
 	NodesWmem = 0;
 	node_sys_base = 0;
+	post_code(0xB2);
+
 	for (Node = 0; Node < MAX_NODES_SUPPORTED; Node++) {
 		struct DCTStatStruc *pDCTstat;
 		pDCTstat = pDCTstatA + Node;
@@ -268,49 +275,66 @@ restartinit:
 		node_sys_base = pDCTstat->NodeSysBase;
 		node_sys_base += (pDCTstat->NodeSysLimit + 2) & ~0x0F;
 	}
+	post_code(0xB3);
+
 	if (NodesWmem == 0) {
 		printk(BIOS_DEBUG, "No Nodes?!\n");
 		goto fatalexit;
 	}
+	post_code(0xB4);
 
 	print_t("mctAutoInitMCT_D: SyncDCTsReady_D\n");
 	SyncDCTsReady_D(pMCTstat, pDCTstatA);	/* Make sure DCTs are ready for accesses.*/
+	post_code(0xB5);
 
 	print_t("mctAutoInitMCT_D: HTMemMapInit_D\n");
 	HTMemMapInit_D(pMCTstat, pDCTstatA);	/* Map local memory into system address space.*/
 	mctHookAfterHTMap();
+	post_code(0xB6);
 
 	print_t("mctAutoInitMCT_D: CPUMemTyping_D\n");
 	CPUMemTyping_D(pMCTstat, pDCTstatA);	/* Map dram into WB/UC CPU cacheability */
 	mctHookAfterCPU();			/* Setup external northbridge(s) */
+	post_code(0xB7);
 
 	print_t("mctAutoInitMCT_D: DQSTiming_D\n");
 	DQSTiming_D(pMCTstat, pDCTstatA);	/* Get Receiver Enable and DQS signal timing*/
+	post_code(0xB8);
 
 	print_t("mctAutoInitMCT_D: UMAMemTyping_D\n");
 	UMAMemTyping_D(pMCTstat, pDCTstatA);	/* Fix up for UMA sizing */
+	post_code(0xB9);
 
 	print_t("mctAutoInitMCT_D: :OtherTiming\n");
 	mct_OtherTiming(pMCTstat, pDCTstatA);
+	post_code(0xBA);
 
 	if (ReconfigureDIMMspare_D(pMCTstat, pDCTstatA)) { /* RESET# if 1st pass of DIMM spare enabled*/
 		goto restartinit;
 	}
+	post_code(0xBB);
 
 	InterleaveNodes_D(pMCTstat, pDCTstatA);
 	InterleaveChannels_D(pMCTstat, pDCTstatA);
+	post_code(0xBC);
 
 	print_t("mctAutoInitMCT_D: ECCInit_D\n");
 	if (ECCInit_D(pMCTstat, pDCTstatA)) {		/* Setup ECC control and ECC check-bits*/
+		post_code(0xBD);
+
 		print_t("mctAutoInitMCT_D: MCTMemClr_D\n");
 		MCTMemClr_D(pMCTstat,pDCTstatA);
+		post_code(0xBE);
 	}
+	post_code(0xBF);
 
 	mct_FinalMCT_D(pMCTstat, (pDCTstatA + 0));	// Node 0
 	print_tx("mctAutoInitMCT_D Done: Global Status: ", pMCTstat->GStatus);
 	return;
 
 fatalexit:
+	post_code(0xFB);
+
 	die("mct_d: fatalexit");
 }
 

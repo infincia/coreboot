@@ -557,14 +557,20 @@ u8 mctGetProcessorPackageType(void) {
 
 void raminit_amdmct(struct sys_info *sysinfo)
 {
+	post_code(0xE0);
+
 	struct MCTStatStruc *pMCTstat = &(sysinfo->MCTstat);
 	struct DCTStatStruc *pDCTstatA = sysinfo->DCTstatA;
+	post_code(0xE1);
 
 	printk(BIOS_DEBUG, "raminit_amdmct begin:\n");
+	post_code(0xE2);
 
 	mctAutoInitMCT_D(pMCTstat, pDCTstatA);
+	post_code(0xE3);
 
 	printk(BIOS_DEBUG, "raminit_amdmct end:\n");
+	post_code(0xE4);
 }
 
 void amdmct_cbmem_store_info(struct sys_info *sysinfo)
