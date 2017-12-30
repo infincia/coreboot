@@ -215,12 +215,6 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 
 	post_code(0x3B);
 
-	/* Wait for all APs to be stopped, otherwise RAM initialization may hang */
-	if (IS_ENABLED(CONFIG_LOGICAL_CPUS))
-		wait_all_other_cores_stopped(bsp_apicid);
-
-	post_code(0x3C);
-
 	/* It's the time to set ctrl in sysinfo now; */
 	printk(BIOS_DEBUG, "fill_mem_ctrl()\n");
 	fill_mem_ctrl(sysinfo->nodes, sysinfo->ctrl, spd_addr);
