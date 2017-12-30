@@ -146,6 +146,14 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 	wait_all_core0_started();
 	post_code(0xC7);
 
+	/* run _early_setup before soft-reset. */
+	rs780_early_setup();
+	post_code(0xC8);
+
+	sb800_early_setup();
+	post_code(0xC9);
+
+
 #if CONFIG_LOGICAL_CPUS
 	/* Core0 on each node is configured. Now setup any additional cores. */
 	start_other_cores(bsp_apicid);
@@ -153,29 +161,7 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 	wait_all_other_cores_started(bsp_apicid);
 #endif
 
-	post_code(0x38);
-
-	/* run _early_setup before soft-reset. */
-	rs780_early_setup();
-	post_code(0xC8);
-
-	console_init();
-	post_code(0xFE);
-
-	printk(BIOS_DEBUG, "\n");
-
-
-	printk(BIOS_DEBUG, "BSP Family_Model: %08x\n", val);
-	printk(BIOS_DEBUG, "*sysinfo range: [%p,%p]\n",sysinfo,sysinfo+1);
-	printk(BIOS_DEBUG, "bsp_apicid = %02x\n", bsp_apicid);
-	printk(BIOS_DEBUG, "cpu_init_detectedx = %08lx\n", cpu_init_detectedx);
-
-	sb800_early_setup();
-	post_code(0xC8);
-
 #if IS_ENABLED(CONFIG_SET_FIDVID)
-	post_code(0xC9);
-
 	msr = rdmsr(0xc0010071);
 	post_code(0xCA);
 
@@ -201,6 +187,16 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 	msr = rdmsr(0xc0010071);
 	printk(BIOS_DEBUG, "End FIDVIDMSR 0xc0010071 0x%08x 0x%08x\n", msr.hi, msr.lo);
 #endif
+
+	console_init();
+	post_code(0xFE);
+
+	printk(BIOS_DEBUG, "\n");
+
+	printk(BIOS_DEBUG, "BSP Family_Model: %08x\n", val);
+	printk(BIOS_DEBUG, "*sysinfo range: [%p,%p]\n",sysinfo,sysinfo+1);
+	printk(BIOS_DEBUG, "bsp_apicid = %02x\n", bsp_apicid);
+	printk(BIOS_DEBUG, "cpu_init_detectedx = %08lx\n", cpu_init_detectedx);
 
 	post_code(0xCE);
 
