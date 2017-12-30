@@ -8,8 +8,6 @@ chip northbridge/amd/amdfam10/root_complex
 	device domain 0 on
 		subsystemid 0x103c 0x1609 inherit
 		chip northbridge/amd/amdfam10
-			device pci 18.0 on end
-			device pci 18.0 on end
 			device pci 18.0 on #  northbridge
 				chip southbridge/amd/rs780
 					device pci 0.0 on end # HT  	0x9600
@@ -76,6 +74,8 @@ chip northbridge/amd/amdfam10/root_complex
 				end	#southbridge/amd/cimx/sb800
 			end #  device pci 18.0
 
+			device pci 18.0 on end
+			device pci 18.0 on end
 			device pci 18.1 on end
 			device pci 18.2 on end
 			device pci 18.3 on end
