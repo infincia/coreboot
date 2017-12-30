@@ -416,6 +416,8 @@ static int ehci_wait_for_port(struct ehci_regs *ehci_regs, int port)
 
 static int usbdebug_init_(unsigned ehci_bar, unsigned offset, struct ehci_debug_info *info)
 {
+	post_code(0x64);
+
 	struct ehci_caps *ehci_caps;
 	struct ehci_regs *ehci_regs;
 
@@ -430,19 +432,25 @@ static int usbdebug_init_(unsigned ehci_bar, unsigned offset, struct ehci_debug_
 	memset(info, 0, sizeof (*info));
 	info->ehci_base = (void *)ehci_bar;
 	info->ehci_debug = (void *)(ehci_bar + offset);
+	post_code(0x65);
 
 	dprintk(BIOS_INFO, "ehci_bar: 0x%x debug_offset 0x%x\n", ehci_bar, offset);
+	post_code(0x66);
 
 	ehci_caps  = (struct ehci_caps *)ehci_bar;
 	ehci_regs  = (struct ehci_regs *)(ehci_bar +
 			HC_LENGTH(read32(&ehci_caps->hc_capbase)));
+	post_code(0x67);
 
 	struct ehci_dbg_port *ehci_debug = info->ehci_debug;
+
+	post_code(0x68);
 
 	if (CONFIG_USBDEBUG_DEFAULT_PORT > 0)
 		ehci_debug_select_port(CONFIG_USBDEBUG_DEFAULT_PORT);
 	else
 		ehci_debug_select_port(1);
+	post_code(0x69);
 
 try_next_time:
 	port_map_tried = 0;
@@ -460,6 +468,8 @@ try_next_port:
 		dprintk(BIOS_INFO, "PORTSC #%d: %08x\n", i, portsc);
 	}
 
+	post_code(0x6A);
+
 	if (port_map_tried && (new_debug_port != debug_port)) {
 		if (--playtimes) {
 			ehci_debug_select_port(debug_port);
@@ -467,6 +477,8 @@ try_next_port:
 		}
 		return -1;
 	}
+
+	post_code(0x6B);
 
 	/* Wait until the controller is halted */
 	status = read32(&ehci_regs->status);
@@ -484,6 +496,8 @@ try_next_port:
 		else
 			dprintk(BIOS_INFO, "EHCI controller is not halted. Reset may fail.\n");
 	}
+
+	post_code(0x6C);
 
 	loop = 100;
 	/* Reset the EHCI controller */
@@ -503,11 +517,15 @@ try_next_port:
 		dprintk(BIOS_INFO, "EHCI controller reset successfully.\n");
 	}
 
+	post_code(0x6D);
+
 	/* Claim ownership, but do not enable yet */
 	ctrl = read32(&ehci_debug->control);
 	ctrl |= DBGP_OWNER;
 	ctrl &= ~(DBGP_ENABLED | DBGP_INUSE);
 	write32(&ehci_debug->control, ctrl);
+
+	post_code(0x6E);
 
 	/* Start EHCI controller */
 	cmd = read32(&ehci_regs->command);
@@ -515,8 +533,12 @@ try_next_port:
 	cmd |= CMD_RUN;
 	write32(&ehci_regs->command, cmd);
 
+	post_code(0x6F);
+
 	/* Ensure everything is routed to the EHCI */
 	write32(&ehci_regs->configured_flag, FLAG_CF);
+
+	post_code(0xA0);
 
 	/* Wait until the controller is no longer halted */
 	loop = 10;
@@ -530,7 +552,7 @@ try_next_port:
 		return -3;
 	}
 	dprintk(BIOS_INFO, "EHCI started.\n");
-
+	post_code(0xA1);
 	/* Wait for a device to show up in the debug port */
 	ret = ehci_wait_for_port(ehci_regs, debug_port);
 	if (ret < 0) {
@@ -539,7 +561,7 @@ try_next_port:
 	}
 	dprintk(BIOS_INFO, "EHCI done waiting for port.\n");
 
-
+	post_code(0xA2);
 	/* Enable the debug port */
 	ctrl = read32(&ehci_debug->control);
 	ctrl |= DBGP_CLAIM;
@@ -552,23 +574,24 @@ try_next_port:
 		goto err;
 	}
 	dprintk(BIOS_INFO, "EHCI debug port enabled.\n");
-
+	post_code(0xA3);
 #if 0
 	/* Completely transfer the debug device to the debug controller */
 	portsc = read32(&ehci_regs->port_status[debug_port - 1]);
 	portsc &= ~PORT_PE;
 	write32(&ehci_regs->port_status[debug_port - 1], portsc);
 #endif
-
+	post_code(0xA4);
 	dbgp_mdelay(100);
 
 	ret = dbgp_probe_gadget(info->ehci_debug, &info->ep_pipe[0]);
 	if (ret < 0) {
+		post_code(0xA5);
 		dprintk(BIOS_INFO, "Could not probe gadget on debug port.\n");
 		ret = -6;
 		goto err;
 	}
-
+	post_code(0xA6);
 	return 0;
 err:
 	/* Things didn't work so remove my claim */
@@ -577,25 +600,31 @@ err:
 	write32(&ehci_debug->control, ctrl);
 	//return ret;
 
+	post_code(0xA7);
+
 next_debug_port:
 #if CONFIG_USBDEBUG_DEFAULT_PORT == 0
+	post_code(0xA8);
 	port_map_tried |= (1 << (debug_port - 1));
 	new_debug_port = ((debug_port-1 + 1) % n_ports) + 1;
 	if (port_map_tried != ((1 << n_ports) - 1)) {
+		post_code(0xAB);
 		ehci_debug_select_port(new_debug_port);
 		goto try_next_port;
 	}
 	if (--playtimes) {
+		post_code(0xAC);
 		ehci_debug_select_port(new_debug_port);
 		goto try_next_time;
 	}
 #else
+	post_code(0xA9);
 	if (0)
 		goto try_next_port;
 	if (--playtimes)
 		goto try_next_time;
 #endif
-
+	post_code(0xAA);
 	return -10;
 }
 
