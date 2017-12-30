@@ -549,6 +549,7 @@ try_next_port:
 
 	if (!loop) {
 		dprintk(BIOS_INFO, "EHCI could not be started.\n");
+		post_code(0xAF);
 		return -3;
 	}
 	dprintk(BIOS_INFO, "EHCI started.\n");
