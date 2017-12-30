@@ -113,8 +113,6 @@ void cache_as_ram_main(unsigned long bist, unsigned long cpu_init_detectedx)
 	val = cpuid_eax(1);
 	post_code(0xC3);
 
-	post_code(0xC4);
-
 	/* Setup sysinfo defaults */
 	set_sysinfo_in_ram(0);
 	post_code(0xC5);
